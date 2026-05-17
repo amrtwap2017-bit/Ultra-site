@@ -19,15 +19,8 @@ import '@fontsource/jetbrains-mono/500.css';
 import '@fontsource/jetbrains-mono/700.css';
 // ────────────────────────────────────────────────────
 
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+import './index.css';
 import { useState, useRef, useCallback, useEffect, lazy, Suspense } from 'react'
 import { translations, Lang } from './data/content';
 import { LoadingScreen } from './components/LoadingScreen';
@@ -72,6 +65,7 @@ export default function App() {
       '--scroll-progress',
       scrollProgress.toString()
     );
+
     // Add class to navbar when user scrolls down
     if (scrollY > 80) {
       document.documentElement.classList.add('scrolled');
