@@ -72,7 +72,6 @@ export default function App() {
       '--scroll-progress',
       scrollProgress.toString()
     );
-
     // Add class to navbar when user scrolls down
     if (scrollY > 80) {
       document.documentElement.classList.add('scrolled');
