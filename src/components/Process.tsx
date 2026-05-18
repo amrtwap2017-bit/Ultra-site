@@ -1,6 +1,5 @@
-import { motion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
-
+import { motion } from 'framer-motion';
 function useInView(threshold = 0.05) {
   const ref = useRef<HTMLDivElement | null>(null);
   const [isInView, setIsInView] = useState(false);

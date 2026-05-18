@@ -1,3 +1,7 @@
+import { useState, useRef, useCallback, useEffect, lazy, Suspense } from 'react'
+import { translations, Lang } from './data/content';
+import { LoadingScreen } from './components/LoadingScreen';
+import { Navbar } from './components/Navbar';
 import '@fontsource/cormorant-garamond/300.css';
 import '@fontsource/cormorant-garamond/400.css';
 import '@fontsource/cormorant-garamond/500.css';
@@ -18,13 +22,6 @@ import '@fontsource/jetbrains-mono/400.css';
 import '@fontsource/jetbrains-mono/500.css';
 import '@fontsource/jetbrains-mono/700.css';
 // ────────────────────────────────────────────────────
-
-
-import './index.css';
-import { useState, useRef, useCallback, useEffect, lazy, Suspense } from 'react'
-import { translations, Lang } from './data/content';
-import { LoadingScreen } from './components/LoadingScreen';
-import { Navbar } from './components/Navbar';
 const Hero = lazy(() => import('./components/Hero').then(module => ({ default: module.Hero })));
 const Highlight = lazy(() => import('./components/Highlight').then(module => ({ default: module.Highlight })));
 const About = lazy(() => import('./components/About').then(module => ({ default: module.About })));

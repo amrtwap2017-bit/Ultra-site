@@ -2,6 +2,17 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Translation, Lang } from '../data/content';
 import { ArrowRight, Sparkles } from 'lucide-react';
+type PARTICLE_DATA = {
+  id: string;
+  x: number;
+  y: number;
+  size: number;
+  duration: number;
+  delay: number;
+  opacity: number;
+  driftX: number[];
+  driftY: number[];
+};
 
 interface HeroProps {
   t: Translation;
@@ -34,7 +45,7 @@ const EASE: [number, number, number, number] = [0.25, 0.46, 0.45, 0.94];
    PERFORMANCE: Pre-generate all random values at module level
 ══════════════════════════════════════════════════════════ */
 const PARTICLE_DATA = (() => {
-  const risingTrails = Array.from({ length: 80 }, (_, i) => ({
+  const risingTrails = Array.from({ length: 12 }, (_, i) => ({
     id: `rise-${i}`,
     x: Math.random() * 100,
     size: 1 + Math.random() * 3,
@@ -43,7 +54,7 @@ const PARTICLE_DATA = (() => {
     opacity: 0.2 + Math.random() * 0.5,
   }));
 
-  const floatingOrbs = Array.from({ length: 35 }, (_, i) => ({
+  const floatingOrbs = Array.from({ length: 10 }, (_, i) => ({
     id: `orb-${i}`,
     x: Math.random() * 100,
     y: Math.random() * 100,
@@ -66,7 +77,7 @@ const PARTICLE_DATA = (() => {
     duration: 9 + Math.random() * 5,
   }));
 
-  const tinySparkles = Array.from({ length: 60 }, (_, i) => ({
+  const tinySparkles = Array.from({ length: 12 }, (_, i) => ({
     id: `sparkle-${i}`,
     x: Math.random() * 100,
     y: Math.random() * 100,
@@ -75,7 +86,7 @@ const PARTICLE_DATA = (() => {
     repeatDelay: 2 + Math.random() * 5,
   }));
 
-  const slowDrifters = Array.from({ length: 12 }, (_, i) => ({
+  const slowDrifters = Array.from({ length: 10 }, (_, i) => ({
     id: `drift-${i}`,
     x: 10 + Math.random() * 80,
     y: 10 + Math.random() * 80,
