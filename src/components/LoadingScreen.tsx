@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import logo from '../assets/Logo.png';
+
 interface LoadingScreenProps {
   onComplete: () => void;
 }
+
 export const LoadingScreen: React.FC<LoadingScreenProps> = ({ onComplete }) => {
   const [progress, setProgress] = useState(0);
   const [fadeOut, setFadeOut] = useState(false);
+
   useEffect(() => {
     const interval = setInterval(() => {
       setProgress((prev) => {
@@ -14,248 +16,299 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ onComplete }) => {
           setTimeout(() => {
             setFadeOut(true);
             setTimeout(onComplete, 600);
-          }, 300);
+          }, 400);
           return 100;
         }
         const increment = prev < 60 ? 3 : prev < 85 ? 2 : 1;
         return Math.min(prev + increment, 100);
       });
-    }, 30);
+    }, 40);
     return () => clearInterval(interval);
   }, [onComplete]);
+
   return (
     <div
-      className={`fixed inset-0 z-[9999] bg-black flex flex-col items-center justify-center transition-opacity duration-600 ${
+      className={`fixed inset-0 z-[9999] bg-black transition-opacity duration-700 ${
         fadeOut ? 'opacity-0 pointer-events-none' : 'opacity-100'
       }`}
     >
-      {/* Decorative gradient lines */}
+      {/* ── Grid / axis lines ── */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-px h-full bg-gradient-to-b from-transparent via-[#d4af37]/15 to-transparent" />
         <div className="absolute top-1/2 left-0 -translate-y-1/2 w-full h-px bg-gradient-to-r from-transparent via-[#d4af37]/10 to-transparent" />
-        <div className="absolute top-[20%] left-0 w-full h-px bg-gradient-to-r from-transparent via-white/3 to-transparent" />
-        <div className="absolute top-[80%] left-0 w-full h-px bg-gradient-to-r from-transparent via-white/3 to-transparent" />
+        <div
+          className="absolute left-0 w-full h-px"
+          style={{
+            top: 'calc(50% - 58px)',
+            background:
+              'linear-gradient(90deg, transparent 20%, rgba(212,175,55,0.15) 45%, rgba(212,175,55,0.3) 50%, rgba(212,175,55,0.15) 55%, transparent 80%)',
+          }}
+        />
+        <div
+          className="absolute left-0 w-full h-px"
+          style={{
+            top: 'calc(50% + 52px)',
+            background:
+              'linear-gradient(90deg, transparent 20%, rgba(212,175,55,0.08) 45%, rgba(212,175,55,0.15) 50%, rgba(212,175,55,0.08) 55%, transparent 80%)',
+          }}
+        />
+        <div className="absolute top-[15%] left-0 w-full h-px bg-gradient-to-r from-transparent via-white/[0.02] to-transparent" />
+        <div className="absolute bottom-[15%] left-0 w-full h-px bg-gradient-to-r from-transparent via-white/[0.02] to-transparent" />
       </div>
-      <div className="relative flex flex-col items-center gap-8 px-8">
-        {/* Animated Triangle Logo */}
-        <div className="relative w-20 h-20">
-          {/* Outer glow ring */}
-          <div className="absolute inset-0 rounded-full bg-[#d4af37]/5 blur-3xl scale-[2] animate-pulse" />
-          
-          {/* Logo image centered */}
-          <img
-            src={logo}
-            alt="logo"
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20
-                      w-22 h-22
-                      transition-all duration-500
-                      group-hover:scale-105 group-hover:brightness-110
-                      drop-shadow-[0_0_20px_rgba(212,175,55,0.2)]
-                      group-hover:drop-shadow-[0_0_35px_rgba(212,175,55,0.45)]"
+
+      {/* ── Centered symbol ── */}
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+        <div className="relative w-[140px] h-[140px] overflow-visible">
+
+          {/* Deep outer blur */}
+          <div
+            className="absolute pointer-events-none animate-pulse"
+            style={{
+              top: '50%',
+              left: '50%',
+              width: 200,
+              height: 200,
+              transform: 'translate(-50%, -50%)',
+              background: 'radial-gradient(circle, rgba(212,175,55,0.12) 0%, rgba(212,175,55,0.04) 50%, transparent 70%)',
+              filter: 'blur(30px)',
+            }}
           />
-          
-          {/* SVG Triangle with animation */}
-          <div className="relative w-20 h-20">
 
-            {/* --- Ambient outer glow ring --- */}
-            <div className="absolute inset-0 rounded-full pointer-events-none"
-              style={{
-                background: 'radial-gradient(circle, rgba(198,161,91,0.12) 0%, transparent 70%)',
-                animation: 'pulse-gold 3s ease-in-out infinite',
-              }}
-            />
+          {/* Inner warm glow */}
+          <div
+            className="absolute rounded-full pointer-events-none"
+            style={{
+              top: '55%',
+              left: '50%',
+              width: 80,
+              height: 80,
+              transform: 'translate(-50%, -50%)',
+              background: 'radial-gradient(circle, rgba(244,185,66,0.2) 0%, rgba(212,175,55,0.08) 50%, transparent 70%)',
+              filter: 'blur(15px)',
+              animation: 'pulseGlow 3s ease-in-out infinite',
+            }}
+          />
 
-            {/* --- Orbit ring (slow rotate) --- */}
-            <svg
-              viewBox="0 0 80 80"
-              className="absolute inset-0 w-20 h-20 pointer-events-none z-10"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              style={{ animation: 'orbitGlow 12s linear infinite' }}
-            >
-              <circle
-                cx="40"
-                cy="40"
-                r="37"
-                stroke="#C6A15B"
-                strokeWidth="0.3"
-                strokeDasharray="4 6"
-                opacity="0.3"
-              />
-            </svg>
+          {/* Triangle-shaped glow */}
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              top: '50%',
+              left: '50%',
+              width: 100,
+              height: 90,
+              transform: 'translate(-50%, -45%)',
+              background: 'conic-gradient(from 210deg at 50% 35%, transparent 0deg, rgba(212,175,55,0.08) 60deg, transparent 120deg)',
+              filter: 'blur(20px)',
+              animation: 'pulseGlow 4s ease-in-out infinite 0.5s',
+            }}
+          />
 
-            {/* --- Main SVG Triangle --- */}
-            <svg
-              viewBox="0 0 80 80"
-              className="absolute inset-0 w-20 h-20 z-30 pointer-events-none"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              {/* Glow filter definition */}
-              <defs>
-                <filter id="goldGlow" x="-30%" y="-30%" width="160%" height="160%">
-                  <feGaussianBlur stdDeviation="2" result="coloredBlur" />
-                  <feMerge>
-                    <feMergeNode in="coloredBlur" />
-                    <feMergeNode in="SourceGraphic" />
-                  </feMerge>
-                </filter>
-                <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
-                  <feGaussianBlur stdDeviation="1" result="coloredBlur" />
-                  <feMerge>
-                    <feMergeNode in="coloredBlur" />
-                    <feMergeNode in="SourceGraphic" />
-                  </feMerge>
-                </filter>
-                <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#F4B942" stopOpacity="1" />
-                  <stop offset="50%" stopColor="#C6A15B" stopOpacity="1" />
-                  <stop offset="100%" stopColor="#d4af37" stopOpacity="0.7" />
-                </linearGradient>
-              </defs>
-
-              {/* Shadow/depth outer triangle */}
-              <polygon
-                points="40,6 74,66 6,66"
-                stroke="rgba(198,161,91,0.15)"
-                strokeWidth="4"
-                fill="none"
-                filter="url(#goldGlow)"
-              />
-
-              {/* Outer triangle — animated draw */}
-              <polygon
-                points="40,6 74,66 6,66"
-                stroke="url(#goldGrad)"
-                strokeWidth="1.8"
-                fill="none"
-                filter="url(#goldGlow)"
-                style={{
-                  strokeDasharray: 300,
-                  strokeDashoffset: 300,
-                  animation: 'dashAnim 3.5s cubic-bezier(0.16, 1, 0.3, 1) forwards',
-                }}
-              />
-
-              {/* Inner triangle — fade in with delay */}
-              <polygon
-                points="40,20 62,58 18,58"
-                stroke="#C6A15B"
-                strokeWidth="0.6"
-                fill="none"
-                filter="url(#softGlow)"
-                style={{
-                  opacity: 0,
-                  transformOrigin: '40px 40px',
-                  animation: 'innerTriangleFade 1.8s ease forwards 3s',
-                }}
-              />
-
-              {/* Center dot — luxury accent */}
-              <circle
-                cx="40"
-                cy="42"
-                r="1.5"
-                fill="#C6A15B"
-                opacity="0"
-                style={{
-                  animation: 'innerTriangleFade 0.8s ease forwards 2s',
-                }}
-              />
-
-              {/* Corner accent dots */}
-              <circle cx="40" cy="6" r="1.2" fill="#F4B942" opacity="0"
-                style={{ animation: 'innerTriangleFade 0.8s ease forwards 1.8s' }}
-              />
-              <circle cx="40" cy="42" r="1.5" fill="#C6A15B" opacity="0"
-                style={{ animation: 'innerTriangleFade 1s ease forwards 3.5s' }}
-              />
-              <circle cx="6" cy="66" r="1.2" fill="#F4B942" opacity="0"
-                style={{ animation: 'innerTriangleFade 0.8s ease forwards 2s' }}
-              />
-            </svg>
-
-            {/* --- Ambient particle dots --- */}
-            {[...Array(3)].map((_, i) => (
-              <div
-                key={i}
-                className="absolute w-1 h-1 rounded-full pointer-events-none"
-                style={{
-                  background: '#C6A15B',
-                  top: `${[15, 70, 45][i]}%`,
-                  left: `${[10, 80, 50][i]}%`,
-                  opacity: 0.4,
-                  animation: `particleFloat ${5 + i * 2}s ease-in-out infinite`,
-                  animationDelay: `${i * 0.8}s`,
-                }}
-              />
-            ))}
-          </div>
-
+          {/* Orbit ring */}
           <svg
-            viewBox="0 0 80 80"
-            className="absolute inset-0 w-20 h-20 z-30 pointer-events-none"
+            viewBox="0 0 140 140"
+            className="absolute inset-0 w-full h-full pointer-events-none"
             fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          > 
+            style={{ animation: 'spinCW 20s linear infinite' }}
+          >
+            <circle
+              cx="70"
+              cy="70"
+              r="66"
+              stroke="#C6A15B"
+              strokeWidth="0.3"
+              strokeDasharray="4 8"
+              opacity="0.25"
+            />
+            <circle cx="70" cy="4" r="1.5" fill="#d4af37" opacity="0.6" />
+          </svg>
+
+          {/* ── Triangle SVG ── */}
+          <svg
+            viewBox="0 0 120 120"
+            className="absolute z-10 pointer-events-none"
+            style={{
+              top: '50%',
+              left: '50%',
+              width: 140,
+              height: 140,
+              transform: 'translate(-50%, -50%)',
+            }}
+            fill="none"
+          >
+            <defs>
+              <linearGradient id="triGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#F4B942" />
+                <stop offset="50%" stopColor="#d4af37" />
+                <stop offset="100%" stopColor="#C6A15B" stopOpacity="0.7" />
+              </linearGradient>
+              <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="1.5" result="blur" />
+                <feMerge>
+                  <feMergeNode in="blur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+            </defs>
+
             {/* Outer triangle */}
             <polygon
-              points="40,6 74,66 6,66"
-              stroke="#d4af37"
-              strokeWidth="2"
+              points="60,12 108,96 12,96"
+              stroke="url(#triGrad)"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
               fill="none"
-              style={{ 
-                strokeDasharray: 200, 
-                strokeDashoffset: 200, 
-                animation: 'dashAnim 1.5s ease forwards' 
+              filter="url(#glow)"
+              style={{
+                strokeDasharray: 280,
+                strokeDashoffset: 280,
+                animation: 'drawShape 2.5s cubic-bezier(0.16,1,0.3,1) forwards 0.3s',
               }}
             />
-            {/* Inner triangle */}
-            <polygon
-              points="40,20 62,58 18,58"
-              stroke="#d4af37"
-              strokeWidth="0.8"
-              fill="none"
-              opacity="0.4"
+
+            {/* Corner dots */}
+            {[
+              { cx: 60, cy: 12, delay: '1.5s' },
+              { cx: 108, cy: 96, delay: '1.9s' },
+              { cx: 12, cy: 96, delay: '2.3s' },
+            ].map(({ cx, cy, delay }, i) => (
+              <g key={i}>
+                <circle
+                  cx={cx}
+                  cy={cy}
+                  r="4"
+                  fill="none"
+                  stroke="#F4B942"
+                  strokeWidth="0.3"
+                  style={{
+                    opacity: 0,
+                    animation: `fadeInDot 0.6s ease forwards ${delay}`,
+                  }}
+                />
+                <circle
+                  cx={cx}
+                  cy={cy}
+                  r="1.5"
+                  fill="#F4B942"
+                  style={{
+                    opacity: 0,
+                    animation: `fadeInDot 0.5s ease forwards ${delay}`,
+                  }}
+                />
+              </g>
+            ))}
+
+            {/* Center dot */}
+            <circle
+              cx="60"
+              cy="68"
+              r="1"
+              fill="#C6A15B"
+              style={{
+                opacity: 0,
+                animation: 'fadeInOpacity 1s ease forwards 2s',
+              }}
             />
           </svg>
-          
-          <style>{`
-            @keyframes dashAnim {
-              to { stroke-dashoffset: 0; }
-            }
-          `}</style>
-        </div>        {/* Brand Name */}
-        <div className="text-center space-y-1">
-          <h1
-            className="text-2xl sm:text-3xl font-bold tracking-[0.3em] text-[#d4af37] uppercase"
-            style={{ fontFamily: 'Georgia, serif' }}
+
+          {/* ── LOGO — sized to fill the triangle like one piece ── */}
+          <div
+            className="absolute z-20 pointer-events-none"
+            style={{
+              top: '50%',
+              left: '50%',
+              width: 100,
+              height: 100,
+              transform: 'translate(-50%, -46%)',
+            }}
           >
-            TRIANGLE BLACK
-          </h1>
-          <div className="h-px bg-gradient-to-r from-transparent via-[#d4af37]/60 to-transparent" />
-          <p className="text-[9px] sm:text-[10px] tracking-[0.35em] text-white/40 uppercase font-mono">
-            Hospitality Engineering Initialization
-          </p>
-        </div>
-        {/* Progress Bar */}
-        <div className="w-64 sm:w-80 space-y-2">
-          <div className="h-px bg-neutral-800 rounded-full overflow-hidden">
-            <div
-              className="h-full bg-gradient-to-r from-[#d4af37]/60 to-[#d4af37] rounded-full transition-all duration-100 ease-out"
-              style={{ width: `${progress}%` }}
+            <img
+              src="https://ik.imagekit.io/xkzwx3aiw/Logo.png?tr=w-96,f-webp,q-75"
+              alt="Triangle Black"
+              width={100}
+              height={100}
+              loading="eager"
+              decoding="async"
+              className="select-none w-full h-full"
+              style={{
+                objectFit: 'contain',
+                opacity: 0,
+                transform: 'scale(0.5)',
+                animation: 'logoIn 1s cubic-bezier(0.16,1,0.3,1) forwards 0.6s',
+                filter: 'drop-shadow(0 0 15px rgba(212,175,55,0.45))',
+              }}
             />
-          </div>
-          <div className="flex justify-between items-center">
-            <span className="text-[9px] text-[#d4af37]/60 uppercase tracking-widest font-mono">
-              SYSTEMS SECURED
-            </span>
-            <span className="text-[9px] text-[#d4af37] font-mono font-bold">
-              {progress}%
-            </span>
           </div>
         </div>
       </div>
+
+      {/* ── Text below ── */}
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 translate-y-[85px] text-center px-2">
+        <h1
+          className="text-2xl sm:text-3xl font-bold leading-none tracking-[0.3em] text-[#d4af37] uppercase"
+          style={{
+            fontFamily: 'Georgia, serif',
+            opacity: 0,
+            animation: 'slideUp 0.4s ease forwards 0.9s',
+          }}
+        >
+          TRIANGLE BLACK
+        </h1>
+
+        <div
+          className="h-px mx-auto mt-2"
+          style={{
+            width: 220,
+            background:
+              'linear-gradient(90deg, transparent, rgba(212,175,55,0.5), transparent)',
+            opacity: 0,
+            transform: 'scaleX(0)',
+            animation: 'lineGrow 0.5s ease forwards 1.1s',
+          }}
+        />
+
+        <p
+          className="mt-2 text-[9px] sm:text-[10px] leading-none tracking-[0.35em] text-white/40 uppercase font-sans"
+          style={{
+            opacity: 0,
+            animation: 'slideUp 0.4s ease forwards 1.3s',
+          }}
+        >
+          Hospitality Engineering Initialization
+        </p>
+      </div>
+
+      <style>{`
+        @keyframes drawShape {
+          to { stroke-dashoffset: 0; }
+        }
+        @keyframes fadeInDot {
+          to { opacity: 0.8; }
+        }
+        @keyframes fadeInOpacity {
+          to { opacity: 0.35; }
+        }
+        @keyframes logoIn {
+          0%   { opacity: 0; transform: scale(0.5); }
+          100% { opacity: 1; transform: scale(1); }
+        }
+        @keyframes spinCW {
+          to { transform: rotate(360deg); }
+        }
+        @keyframes slideUp {
+          0%   { opacity: 0; transform: translateY(10px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes lineGrow {
+          0%   { opacity: 0; transform: scaleX(0); }
+          100% { opacity: 1; transform: scaleX(1); }
+        }
+        @keyframes pulseGlow {
+          0%, 100% { opacity: 0.7; transform: translate(-50%, -50%) scale(1); }
+          50%      { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+        }
+      `}</style>
     </div>
   );
 };
