@@ -30,161 +30,28 @@ const backgroundOptions = [
 const SLIDE_DURATION = 9000;
 const EASE: [number, number, number, number] = [0.25, 0.46, 0.45, 0.94];
 
-/* ══════════════════════════════════════════════════════════
-   PRE-GENERATED PARTICLE DATA — module level, never re-runs
-══════════════════════════════════════════════════════════ */
+/* ── Lightweight particles — only 2 layers, minimal count ── */
 const PARTICLES = {
-  rising: Array.from({ length: 8 }, (_, i) => ({
-    id: `rise-${i}`,
-    x: 5 + (i / 8) * 90,
-    size: 1.5 + (i % 3) * 0.8,
-    delay: (i / 8) * 14,
-    duration: 7 + (i % 4) * 2,
-    opacity: 0.2 + (i % 3) * 0.12,
-  })),
-
-  orbs: Array.from({ length: 6 }, (_, i) => ({
-    id: `orb-${i}`,
-    x: 10 + (i / 6) * 80,
+  sparkles: Array.from({ length: 5 }, (_, i) => ({
+    id: `s-${i}`,
+    x: 10 + (i / 5) * 80,
     y: 15 + (i % 3) * 30,
-    size: 5 + (i % 3) * 3,
-    delay: i * 1.2,
-    duration: 10 + (i % 3) * 3,
-    driftX: [0, 8 + (i % 3) * 4, -(5 + (i % 2) * 4), 0] as number[],
-    driftY: [0, -(15 + (i % 3) * 8), -(8 + (i % 2) * 5), 0] as number[],
+    delay: i * 2,
+    duration: 2 + (i % 3) * 0.8,
+    repeat: 4 + (i % 3) * 2,
   })),
-
-  sparkles: Array.from({ length: 8 }, (_, i) => ({
-    id: `sparkle-${i}`,
-    x: 5 + (i / 8) * 90,
-    y: 10 + (i % 4) * 22,
-    delay: i * 1.1,
-    flash: 1.5 + (i % 3) * 0.6,
-    repeat: 3 + (i % 4) * 1.5,
-  })),
-
-  streaks: Array.from({ length: 4 }, (_, i) => ({
-    id: `streak-${i}`,
-    x: 10 + i * 22,
-    y: 10 + (i % 2) * 25,
-    delay: 3 + i * 5,
-    duration: 1.3 + (i % 2) * 0.4,
-    repeat: 12 + i * 3,
-  })),
-
-  dots: Array.from({ length: 20 }, (_, i) => ({
-    id: `dot-${i}`,
-    x: (i / 20) * 100,
-    y: (i % 5) * 20 + 5,
-    size: 1 + (i % 2) * 0.8,
-    delay: (i % 6) * 1,
-    duration: 3 + (i % 4) * 1,
+  dots: Array.from({ length: 10 }, (_, i) => ({
+    id: `d-${i}`,
+    x: (i / 10) * 100,
+    y: (i % 4) * 25 + 5,
+    size: 1 + (i % 2) * 0.6,
+    delay: (i % 5) * 1.2,
+    duration: 3.5 + (i % 3) * 1.5,
   })),
 };
 
-/* ══════════════════════════════════════════════════════════
-   OPTIMIZED PARTICLE COMPONENTS
-   — GPU only: transform + opacity
-   — willChange set correctly
-   — Reduced counts for 60fps
-══════════════════════════════════════════════════════════ */
-
-const RisingTrail = memo(
-  ({
-    x,
-    size,
-    delay,
-    duration,
-    opacity,
-  }: {
-    x: number;
-    size: number;
-    delay: number;
-    duration: number;
-    opacity: number;
-  }) => (
-    <motion.div
-      className="absolute rounded-full pointer-events-none"
-      style={{
-        left: `${x}%`,
-        bottom: '-2%',
-        width: size,
-        height: size,
-        willChange: 'transform, opacity',
-        background: `rgba(212,175,55,${opacity})`,
-      }}
-      animate={{
-        y: [0, -window.innerHeight * 1.1],
-        opacity: [0, opacity, opacity, 0],
-      }}
-      transition={{
-        duration,
-        delay,
-        repeat: Infinity,
-        ease: 'linear',
-        times: [0, 0.1, 0.8, 1],
-      }}
-    />
-  )
-);
-
-const FloatingOrb = memo(
-  ({
-    x,
-    y,
-    size,
-    delay,
-    driftX,
-    driftY,
-    duration,
-  }: {
-    x: number;
-    y: number;
-    size: number;
-    delay: number;
-    driftX: number[];
-    driftY: number[];
-    duration: number;
-  }) => (
-    <motion.div
-      className="absolute rounded-full pointer-events-none"
-      style={{
-        left: `${x}%`,
-        top: `${y}%`,
-        width: size,
-        height: size,
-        willChange: 'transform, opacity',
-        background: 'rgba(212,175,55,0.3)',
-      }}
-      animate={{
-        x: driftX,
-        y: driftY,
-        opacity: [0.08, 0.35, 0.15, 0.08],
-      }}
-      transition={{
-        duration,
-        delay,
-        repeat: Infinity,
-        ease: 'easeInOut',
-      }}
-    />
-  )
-);
-
 const TinySparkle = memo(
-  ({
-    x,
-    y,
-    delay,
-    flash,
-    repeat,
-  }: {
-    x: number;
-    y: number;
-    delay: number;
-    flash: number;
-    repeat: number;
-  }) => (
+  ({ x, y, delay, duration, repeat }: { x: number; y: number; delay: number; duration: number; repeat: number }) => (
     <motion.div
       className="absolute pointer-events-none"
       style={{
@@ -196,79 +63,14 @@ const TinySparkle = memo(
         willChange: 'transform, opacity',
         background: '#d4af37',
       }}
-      animate={{
-        opacity: [0, 0.8, 0],
-        scale: [0, 1.4, 0],
-      }}
-      transition={{
-        duration: flash,
-        delay,
-        repeat: Infinity,
-        repeatDelay: repeat,
-        ease: 'easeInOut',
-      }}
-    />
-  )
-);
-
-const ShootingStreak = memo(
-  ({
-    x,
-    y,
-    delay,
-    duration,
-    repeat,
-  }: {
-    x: number;
-    y: number;
-    delay: number;
-    duration: number;
-    repeat: number;
-  }) => (
-    <motion.div
-      className="absolute pointer-events-none"
-      style={{
-        left: `${x}%`,
-        top: `${y}%`,
-        width: 50,
-        height: 1,
-        willChange: 'transform, opacity',
-        background:
-          'linear-gradient(90deg, transparent, rgba(212,175,55,0.6), transparent)',
-        rotate: '-30deg',
-        transformOrigin: 'left center',
-      }}
-      animate={{
-        opacity: [0, 1, 0],
-        x: [0, 120],
-        y: [0, -60],
-        scaleX: [0, 1, 0.2],
-      }}
-      transition={{
-        duration,
-        delay,
-        repeat: Infinity,
-        repeatDelay: repeat,
-        ease: 'easeOut',
-      }}
+      animate={{ opacity: [0, 0.7, 0], scale: [0, 1.2, 0] }}
+      transition={{ duration, delay, repeat: Infinity, repeatDelay: repeat, ease: 'easeInOut' }}
     />
   )
 );
 
 const ConstellationDot = memo(
-  ({
-    x,
-    y,
-    size,
-    delay,
-    duration,
-  }: {
-    x: number;
-    y: number;
-    size: number;
-    delay: number;
-    duration: number;
-  }) => (
+  ({ x, y, size, delay, duration }: { x: number; y: number; size: number; delay: number; duration: number }) => (
     <motion.div
       className="absolute rounded-full pointer-events-none"
       style={{
@@ -277,27 +79,20 @@ const ConstellationDot = memo(
         width: size,
         height: size,
         willChange: 'opacity',
-        background: 'rgba(212,175,55,0.6)',
+        background: 'rgba(212,175,55,0.5)',
       }}
-      animate={{
-        opacity: [0.05, 0.5, 0.05],
-      }}
-      transition={{
-        duration,
-        delay,
-        repeat: Infinity,
-        ease: 'easeInOut',
-      }}
+      animate={{ opacity: [0.05, 0.45, 0.05] }}
+      transition={{ duration, delay, repeat: Infinity, ease: 'easeInOut' }}
     />
   )
 );
 
-/* ── Word-by-word headline reveal ── */
-const WordReveal: React.FC<{
-  text: string;
-  highlightLastN?: number;
-  delay?: number;
-}> = ({ text, highlightLastN = 2, delay = 0 }) => {
+/* ── Word-by-word headline ── */
+const WordReveal: React.FC<{ text: string; highlightLastN?: number; delay?: number }> = ({
+  text,
+  highlightLastN = 2,
+  delay = 0,
+}) => {
   const words = text.split(' ');
   const splitIndex = words.length - highlightLastN;
   return (
@@ -314,8 +109,7 @@ const WordReveal: React.FC<{
             <span
               className="italic"
               style={{
-                background:
-                  'linear-gradient(135deg,#d4af37 0%,#f0d060 50%,#d4af37 100%)',
+                background: 'linear-gradient(135deg,#d4af37 0%,#f0d060 50%,#d4af37 100%)',
                 backgroundSize: '200% auto',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
@@ -336,11 +130,7 @@ const WordReveal: React.FC<{
 };
 
 /* ── Count-up ── */
-const CountUp: React.FC<{
-  value: string;
-  inView: boolean;
-  delay: number;
-}> = ({ value, inView, delay }) => {
+const CountUp: React.FC<{ value: string; inView: boolean; delay: number }> = ({ value, inView, delay }) => {
   const numeric = parseFloat(value.replace(/[^0-9.]/g, ''));
   const suffix = value.replace(/[0-9.]/g, '').replace('+', '');
   const hasPlus = value.includes('+');
@@ -357,9 +147,7 @@ const CountUp: React.FC<{
       if (!start) start = ts;
       const p = Math.min((ts - start) / 1800, 1);
       const eased = 1 - Math.pow(1 - p, 3);
-      setDisplay(
-        `${Math.floor(eased * numeric)}${suffix}${hasPlus ? '+' : ''}`
-      );
+      setDisplay(`${Math.floor(eased * numeric)}${suffix}${hasPlus ? '+' : ''}`);
       if (p < 1) raf = requestAnimationFrame(run);
       else setDisplay(value);
     };
@@ -376,7 +164,7 @@ const CountUp: React.FC<{
 };
 
 /* ══════════════════════════════════════════════
-   MAIN HERO
+   MAIN HERO — REBUILT LEAN
 ══════════════════════════════════════════════ */
 export const Hero: React.FC<HeroProps> = ({ t, setActiveTab, currentLang }) => {
   const [activeBg, setActiveBg] = useState(0);
@@ -439,57 +227,28 @@ export const Hero: React.FC<HeroProps> = ({ t, setActiveTab, currentLang }) => {
     [setActiveTab]
   );
 
-  const getSceneName = (key: string) =>
-    (t.hero[key as keyof typeof t.hero] as string) || key;
+  const getSceneName = (key: string) => (t.hero[key as keyof typeof t.hero] as string) || key;
 
-  const bgEnter = (d: number) => ({
-    opacity: 0,
-    scale: 1.08,
-    x: d > 0 ? 50 : -50,
-  });
-
-  const bgCenter = {
-    opacity: 1,
-    scale: 1.03,
-    x: 0,
-    transition: { duration: 1.2, ease: EASE },
-  };
-
-  const bgExit = (d: number) => ({
-    opacity: 0,
-    scale: 1,
-    x: d > 0 ? -50 : 50,
-    transition: { duration: 1.0, ease: EASE },
-  });
+  const bgEnter = (d: number) => ({ opacity: 0, x: d > 0 ? 40 : -40 });
+  const bgCenter = { opacity: 1, x: 0, transition: { duration: 1, ease: EASE } };
+  const bgExit = (d: number) => ({ opacity: 0, x: d > 0 ? -40 : 40, transition: { duration: 0.8, ease: EASE } });
 
   return (
-    <section
-      id="home"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden"
-    >
-      <style>{`
-        @keyframes shimmer {
-          0%   { background-position: -200% center; }
-          100% { background-position:  200% center; }
-        }
-      `}</style>
+    <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      <style>{`@keyframes shimmer{0%{background-position:-200% center}100%{background-position:200% center}}`}</style>
 
-      {/* Base */}
+      {/* Black base */}
       <div className="absolute inset-0 bg-black z-0" />
 
-      {/* Backgrounds */}
+      {/* Background slides */}
       <AnimatePresence custom={direction} mode="popLayout">
         <motion.div
           key={activeBg}
           custom={direction}
-          initial={
-            imageReady
-              ? bgEnter(direction)
-              : { opacity: 0, scale: 1.08, x: 0 }
-          }
+          initial={imageReady ? bgEnter(direction) : { opacity: 0, x: 0 }}
           animate={bgCenter}
           exit={bgExit(direction)}
-          className="absolute inset-0 will-change-transform z-[1]"
+          className="absolute inset-0 z-[1]"
         >
           <motion.img
             src={backgroundOptions[activeBg].url}
@@ -503,130 +262,25 @@ export const Hero: React.FC<HeroProps> = ({ t, setActiveTab, currentLang }) => {
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/35 to-black/92" />
           <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-black/15" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_25%,rgba(0,0,0,0.45)_100%)]" />
         </motion.div>
       </AnimatePresence>
 
-      {/* ══════════════════════════════════════════════════════
-          PARTICLE SYSTEM — 5 LAYERS — GPU OPTIMIZED
-          Only transform + opacity animated (no blur, no shadow)
-      ══════════════════════════════════════════════════════ */}
-      <div
-        className="absolute inset-0 z-[12] pointer-events-none overflow-hidden"
-        style={{ willChange: 'auto' }}
-      >
-        {/* L1 — Rising Trails */}
-        {PARTICLES.rising.map((p) => (
-          <RisingTrail
-            key={p.id}
-            x={p.x}
-            size={p.size}
-            delay={p.delay}
-            duration={p.duration}
-            opacity={p.opacity}
-          />
-        ))}
-
-        {/* L2 — Floating Orbs */}
-        {PARTICLES.orbs.map((p) => (
-          <FloatingOrb
-            key={p.id}
-            x={p.x}
-            y={p.y}
-            size={p.size}
-            delay={p.delay}
-            driftX={p.driftX}
-            driftY={p.driftY}
-            duration={p.duration}
-          />
-        ))}
-
-        {/* L3 — Tiny Sparkles */}
+      {/* Particles — only 2 lightweight layers */}
+      <div className="absolute inset-0 z-[12] pointer-events-none overflow-hidden">
         {PARTICLES.sparkles.map((p) => (
-          <TinySparkle
-            key={p.id}
-            x={p.x}
-            y={p.y}
-            delay={p.delay}
-            flash={p.flash}
-            repeat={p.repeat}
-          />
+          <TinySparkle key={p.id} x={p.x} y={p.y} delay={p.delay} duration={p.duration} repeat={p.repeat} />
         ))}
-
-        {/* L4 — Shooting Streaks */}
-        {PARTICLES.streaks.map((p) => (
-          <ShootingStreak
-            key={p.id}
-            x={p.x}
-            y={p.y}
-            delay={p.delay}
-            duration={p.duration}
-            repeat={p.repeat}
-          />
-        ))}
-
-        {/* L5 — Constellation Dots */}
         {PARTICLES.dots.map((p) => (
-          <ConstellationDot
-            key={p.id}
-            x={p.x}
-            y={p.y}
-            size={p.size}
-            delay={p.delay}
-            duration={p.duration}
-          />
+          <ConstellationDot key={p.id} x={p.x} y={p.y} size={p.size} delay={p.delay} duration={p.duration} />
         ))}
       </div>
 
-      {/* Grid overlay */}
+      {/* Single decorative ring */}
       <motion.div
-        className="absolute inset-0 bg-[radial-gradient(#d4af37_1px,transparent_1px)] [background-size:32px_32px] z-[13] pointer-events-none"
-        animate={{ opacity: [0.018, 0.04, 0.018] }}
-        transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
-      />
-
-      {/* Decorative rings */}
-      <motion.div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[640px] h-[640px] border border-[#d4af37]/[0.06] rounded-full pointer-events-none z-[14]"
-        animate={{ scale: [1, 1.04, 1], opacity: [0.4, 0.85, 0.4] }}
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] border border-[#d4af37]/[0.06] rounded-full pointer-events-none z-[14]"
+        animate={{ scale: [1, 1.03, 1], opacity: [0.3, 0.7, 0.3] }}
         transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
       />
-      <motion.div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[440px] h-[440px] border border-[#d4af37]/[0.08] rounded-full pointer-events-none z-[14]"
-        animate={{ rotate: 360 }}
-        transition={{ duration: 55, repeat: Infinity, ease: 'linear' }}
-      />
-      <motion.div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[260px] h-[260px] border border-[#d4af37]/[0.05] rounded-full pointer-events-none z-[14]"
-        animate={{ rotate: -360 }}
-        transition={{ duration: 38, repeat: Infinity, ease: 'linear' }}
-      />
-
-      {/* Left scroll label */}
-      <div className="absolute left-6 lg:left-10 top-1/2 -translate-y-1/2 hidden lg:flex flex-col items-center gap-4 z-20">
-        <motion.div
-          className="w-px h-20 bg-gradient-to-b from-transparent to-[#d4af37]/40"
-          initial={{ scaleY: 0 }}
-          animate={{ scaleY: imageReady ? 1 : 0 }}
-          transition={{ duration: 1.2, delay: 0.6, ease: 'easeOut' }}
-          style={{ transformOrigin: 'top' }}
-        />
-        <motion.span
-          initial={{ opacity: 0 }}
-          animate={{ opacity: imageReady ? 1 : 0 }}
-          transition={{ duration: 0.8, delay: 0.8 }}
-          className="text-[10px] tracking-[0.3em] uppercase text-white/40 [writing-mode:vertical-lr] rotate-180"
-        >
-          {t.hero.scrollLabel}
-        </motion.span>
-        <motion.div
-          className="w-px h-20 bg-gradient-to-b from-[#d4af37]/40 to-transparent"
-          initial={{ scaleY: 0 }}
-          animate={{ scaleY: imageReady ? 1 : 0 }}
-          transition={{ duration: 1.2, delay: 0.6, ease: 'easeOut' }}
-          style={{ transformOrigin: 'bottom' }}
-        />
-      </div>
 
       {/* Scene selector */}
       <motion.div
@@ -656,20 +310,40 @@ export const Hero: React.FC<HeroProps> = ({ t, setActiveTab, currentLang }) => {
               key={i}
               onClick={() => handleBgChange(i)}
               className={`rounded-full transition-colors duration-300 ${
-                i === activeBg
-                  ? 'bg-[#d4af37]'
-                  : 'bg-neutral-700 hover:bg-neutral-500'
+                i === activeBg ? 'bg-[#d4af37]' : 'bg-neutral-700 hover:bg-neutral-500'
               }`}
-              animate={
-                i === activeBg
-                  ? { width: 20, height: 4 }
-                  : { width: 4, height: 4 }
-              }
+              animate={i === activeBg ? { width: 20, height: 4 } : { width: 4, height: 4 }}
               transition={{ duration: 0.4, ease: EASE }}
             />
           ))}
         </div>
       </motion.div>
+
+      {/* Left scroll label */}
+      <div className="absolute left-6 lg:left-10 top-1/2 -translate-y-1/2 hidden lg:flex flex-col items-center gap-4 z-20">
+        <motion.div
+          className="w-px h-20 bg-gradient-to-b from-transparent to-[#d4af37]/40"
+          initial={{ scaleY: 0 }}
+          animate={{ scaleY: imageReady ? 1 : 0 }}
+          transition={{ duration: 1.2, delay: 0.6, ease: 'easeOut' }}
+          style={{ transformOrigin: 'top' }}
+        />
+        <motion.span
+          initial={{ opacity: 0 }}
+          animate={{ opacity: imageReady ? 1 : 0 }}
+          transition={{ duration: 0.8, delay: 0.8 }}
+          className="text-[10px] tracking-[0.3em] uppercase text-white/40 [writing-mode:vertical-lr] rotate-180"
+        >
+          {t.hero.scrollLabel}
+        </motion.span>
+        <motion.div
+          className="w-px h-20 bg-gradient-to-b from-[#d4af37]/40 to-transparent"
+          initial={{ scaleY: 0 }}
+          animate={{ scaleY: imageReady ? 1 : 0 }}
+          transition={{ duration: 1.2, delay: 0.6, ease: 'easeOut' }}
+          style={{ transformOrigin: 'bottom' }}
+        />
+      </div>
 
       {/* Main content */}
       <div
@@ -690,26 +364,18 @@ export const Hero: React.FC<HeroProps> = ({ t, setActiveTab, currentLang }) => {
             transition={{ duration: 0.7, delay: 0.4 }}
             style={{ transformOrigin: 'right' }}
           />
-          <motion.div
+          <div
             className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full
-                        bg-neutral-900/80 border border-[#d4af37]/25 backdrop-blur-sm
+                        bg-neutral-900/80 border border-[#d4af37]/25
                         text-[#d4af37] text-[10px] uppercase tracking-[0.25em] font-medium"
-            whileHover={{ scale: 1.06, borderColor: 'rgba(212,175,55,0.5)' }}
-            transition={{ duration: 0.2 }}
           >
-            <motion.span
-              className="flex"
-              animate={{ rotate: [0, 18, -18, 0] }}
-              transition={{ duration: 2.5, repeat: Infinity, repeatDelay: 4 }}
-            >
-              <Sparkles className="w-3 h-3" />
-            </motion.span>
+            <Sparkles className="w-3 h-3" />
             <span>{t.hero.badge}</span>
             <span className="relative flex h-1.5 w-1.5">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#d4af37] opacity-60" />
               <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[#d4af37]" />
             </span>
-          </motion.div>
+          </div>
           <motion.div
             className="h-px w-8 bg-[#d4af37]/50"
             initial={{ scaleX: 0 }}
@@ -721,22 +387,13 @@ export const Hero: React.FC<HeroProps> = ({ t, setActiveTab, currentLang }) => {
 
         {/* Headline */}
         <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.15] mb-8">
-          {imageReady && (
-            <WordReveal
-              text={t.hero.headline}
-              highlightLastN={2}
-              delay={0.2}
-            />
-          )}
+          {imageReady && <WordReveal text={t.hero.headline} highlightLastN={2} delay={0.2} />}
         </h1>
 
         {/* Description */}
         <motion.p
           initial={{ opacity: 0, y: 18 }}
-          animate={{
-            opacity: imageReady ? 1 : 0,
-            y: imageReady ? 0 : 18,
-          }}
+          animate={{ opacity: imageReady ? 1 : 0, y: imageReady ? 0 : 18 }}
           transition={{ duration: 0.9, delay: 0.5, ease: EASE }}
           className="max-w-2xl mx-auto text-sm sm:text-base text-white/70 mb-10 leading-relaxed"
         >
@@ -750,54 +407,28 @@ export const Hero: React.FC<HeroProps> = ({ t, setActiveTab, currentLang }) => {
           transition={{ duration: 0.8, delay: 0.65, ease: EASE }}
           className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
         >
-          <motion.button
+          <button
             onClick={() => handleNav('contact')}
             className="group relative px-8 py-4 bg-gradient-to-r from-[#d4af37] to-[#e6ca65]
-                       text-black font-bold text-sm uppercase tracking-wider rounded-full overflow-hidden"
-            whileHover={{
-              scale: 1.05,
-              boxShadow: '0 18px 38px rgba(212,175,55,0.35)',
-            }}
-            whileTap={{ scale: 0.96 }}
-            transition={{ duration: 0.2 }}
+                       text-black font-bold text-sm uppercase tracking-wider rounded-full
+                       hover:shadow-[0_18px_38px_rgba(212,175,55,0.35)] hover:scale-105
+                       active:scale-95 transition-all duration-200 overflow-hidden"
           >
-            <motion.span
-              className="absolute inset-0 block -skew-x-12 bg-gradient-to-r from-transparent via-white/30 to-transparent"
-              initial={{ x: '-150%' }}
-              whileHover={{ x: '150%' }}
-              transition={{ duration: 0.55, ease: 'easeInOut' }}
-            />
             <span className="relative flex items-center gap-2">
               {t.hero.ctaPrimary}
-              <motion.span
-                className="flex"
-                animate={{ x: [0, 5, 0] }}
-                transition={{
-                  duration: 1.4,
-                  repeat: Infinity,
-                  ease: 'easeInOut',
-                }}
-              >
-                <ArrowRight className="w-4 h-4" />
-              </motion.span>
+              <ArrowRight className="w-4 h-4" />
             </span>
-          </motion.button>
+          </button>
 
-          <motion.button
+          <button
             onClick={() => handleNav('projects')}
             className="px-8 py-4 border border-white/20 text-white font-bold
-                       text-sm uppercase tracking-wider rounded-full"
-            whileHover={{
-              scale: 1.05,
-              borderColor: 'rgba(212,175,55,0.5)',
-              color: '#d4af37',
-              boxShadow: '0 0 24px rgba(212,175,55,0.1)',
-            }}
-            whileTap={{ scale: 0.96 }}
-            transition={{ duration: 0.2 }}
+                       text-sm uppercase tracking-wider rounded-full
+                       hover:border-[#d4af37]/50 hover:text-[#d4af37] hover:scale-105
+                       active:scale-95 transition-all duration-200"
           >
             {t.hero.ctaSecondary}
-          </motion.button>
+          </button>
         </motion.div>
 
         {/* KPI Stats */}
@@ -813,25 +444,13 @@ export const Hero: React.FC<HeroProps> = ({ t, setActiveTab, currentLang }) => {
             { val: t.hero.kpi3, sub: t.hero.kpi3Sub },
             { val: t.hero.kpi4, sub: t.hero.kpi4Sub },
           ].map((kpi, i) => (
-            <motion.div
-              key={i}
-              className="text-center group cursor-default"
-              whileHover={{ scale: 1.07, y: -4 }}
-              transition={{ duration: 0.25 }}
-            >
+            <div key={i} className="text-center">
               <div className="text-2xl sm:text-3xl font-bold text-[#d4af37] font-serif">
                 <CountUp value={kpi.val} inView={kpiVisible} delay={i * 0.12} />
               </div>
-              <motion.div
-                className="h-px bg-[#d4af37]/30 mx-auto mt-2 mb-1"
-                initial={{ width: 0 }}
-                whileHover={{ width: 32 }}
-                transition={{ duration: 0.35 }}
-              />
-              <div className="text-[10px] text-white/50 uppercase tracking-wider mt-1">
-                {kpi.sub}
-              </div>
-            </motion.div>
+              <div className="h-px w-8 bg-[#d4af37]/30 mx-auto mt-2 mb-1" />
+              <div className="text-[10px] text-white/50 uppercase tracking-wider mt-1">{kpi.sub}</div>
+            </div>
           ))}
         </motion.div>
 
