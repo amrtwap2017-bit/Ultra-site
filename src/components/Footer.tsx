@@ -9,6 +9,7 @@ import {
   MapPin,
   ArrowRight,
 } from 'lucide-react';
+import logo from '../assets/Logo.png';
 
 interface FooterProps {
   t: Translation;
@@ -233,28 +234,11 @@ export const Footer: React.FC<FooterProps> = ({
             >
               {/* Logo */}
               <div className="flex items-center gap-3">
-                <picture>
-                  <source
-                    type="image/webp"
-                    srcSet={`
-                      https://ik.imagekit.io/xkzwx3aiw/Logo.png?tr=w-165,f-webp,q-80,e-trim  165w,
-                      https://ik.imagekit.io/xkzwx3aiw/Logo.png?tr=w-330,f-webp,q-80,e-trim  330w
-                    `}
-                    sizes="165px"
-                  />
-                  <img
-                    src={`https://ik.imagekit.io/xkzwx3aiw/Logo.png?tr=w-165,f-webp,q-80,e-trim`}
-                    alt="logo"
-                    loading="eager"
-                    decoding="async"
-                    className="relative z-10 object-contain select-none
-                              w-16 h-16 xs:w-12 xs:h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 lg:w-20 lg:h-20 xl:w-28 xl:h-28 2xl:w-30 2xl:h-30
-                              transition-all duration-500
-                              group-hover:scale-105 group-hover:brightness-110
-                              drop-shadow-[0_0_20px_rgba(212,175,55,0.2)]
-                              group-hover:drop-shadow-[0_0_35px_rgba(212,175,55,0.45)]"
-                  />
-                </picture>
+                <img
+                  src={logo}
+                  alt="Triangle Black Logo"
+                  className="w-auto h-20 object-contain drop-shadow-[0_0_12px_rgba(212,175,55,0.15)]"
+                />
                 <div className="flex flex-col leading-tight">
                   <span
                     className="text-sm font-bold tracking-[0.25em] uppercase font-serif"

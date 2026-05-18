@@ -1,378 +1,221 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { motion } from 'framer-motion';
+import { ArrowRight, ChevronDown } from 'lucide-react';
+import { Translation } from '../data/content';
 
-interface LoadingScreenProps {
-  onComplete: () => void;
+interface HeroProps {
+  t: Translation;
+  setActiveTab: (id: string) => void;
+  currentLang: 'en' | 'ar' | 'it';
 }
 
-export const LoadingScreen: React.FC<LoadingScreenProps> = ({ onComplete }) => {
-  const [fadeOut, setFadeOut] = useState(false);
-  const progressRef = useRef(0);
-  const finishTimerRef = useRef<number | null>(null);
+// Reduced image quality + size for faster LCP
+const backgrounds = [
+  {
+    url: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1400&q=65',
+    nameKey: 'sceneDelivery',
+  },
+  {
+    url: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1400&q=60',
+    nameKey: 'sceneQuality',
+  },
+  {
+    url: 'https://images.unsplash.com/photo-1581094288338-2314dddb7ece?auto=format&fit=crop&w=1400&q=60',
+    nameKey: 'sceneTrusted',
+  },
+];
 
+const SLIDE_DURATION = 6000;
+const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
+
+export const Hero: React.FC<HeroProps> = ({ t, setActiveTab, currentLang }) => {
+  const [activeBg, setActiveBg] = useState(0);
+  const [ready, setReady] = useState(false);
+  const isRtl = currentLang === 'ar';
+
+  // Preload first image then show content
   useEffect(() => {
-    const interval = window.setInterval(() => {
-      const prev = progressRef.current;
-      const increment = prev < 60 ? 3 : prev < 85 ? 2 : 1;
-      const next = Math.min(prev + increment, 100);
-
-      progressRef.current = next;
-
-      if (next >= 100) {
-        window.clearInterval(interval);
-
-        finishTimerRef.current = window.setTimeout(() => {
-          requestAnimationFrame(() => {
-            setFadeOut(true);
-          });
-        }, 400);
-      }
-    }, 40);
-
-    return () => {
-      window.clearInterval(interval);
-      if (finishTimerRef.current !== null) {
-        window.clearTimeout(finishTimerRef.current);
-      }
-    };
+    const img = new window.Image();
+    img.src = backgrounds[0].url;
+    img.onload = () => setReady(true);
+    img.onerror = () => setReady(true);
+    const fallback = setTimeout(() => setReady(true), 2000);
+    // Preload rest lazily
+    setTimeout(() => {
+      backgrounds.slice(1).forEach(bg => {
+        const p = new window.Image();
+        p.src = bg.url;
+      });
+    }, 1000);
+    return () => clearTimeout(fallback);
   }, []);
 
-  /*
-    Triangle math:
-    viewBox = 120×120, rendered at 140×140px
-    scale = 140/120 = 1.1667
+  // Slide interval
+  useEffect(() => {
+    if (!ready) return;
+    const id = setInterval(() => setActiveBg(p => (p + 1) % backgrounds.length), SLIDE_DURATION);
+    return () => clearInterval(id);
+  }, [ready]);
 
-    Apex y=12 → pixel from top of SVG box = 12 * 1.1667 = 14px
-    Base y=96 → pixel from top of SVG box = 96 * 1.1667 = 112px
+  const handleNav = useCallback((id: string) => {
+    setActiveTab(id);
+    if (id === 'home') { window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+    const el = document.getElementById(id);
+    if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' });
+  }, [setActiveTab]);
 
-    SVG box is centered via translate(-50%,-50%) inside the 140px container.
-    So SVG top = 0, bottom = 140 relative to the symbol container.
-
-    The symbol container is inside the flex column.
-    The flex column is centered at screen 50%/50%.
-
-    Symbol container is 140px tall.
-    Flex column total = 140 (symbol) + 16 (mt-4) + ~60 (text) ≈ 216px
-    Half = 108px
-
-    Symbol top edge relative to screen center = -108px
-    Triangle apex = -108 + 14 = -94px from center
-    Triangle base = -108 + 112 = +4px from center
-
-    Upper line: calc(50% - 94px)
-    Lower line: calc(50% + 4px)
-  */
+  const kpis = [
+    { val: t.hero.kpi1, sub: t.hero.kpi1Sub },
+    { val: t.hero.kpi2, sub: t.hero.kpi2Sub },
+    { val: t.hero.kpi3, sub: t.hero.kpi3Sub },
+    { val: t.hero.kpi4, sub: t.hero.kpi4Sub },
+  ];
 
   return (
-    <div
-      onTransitionEnd={(e) => {
-        if (
-          fadeOut &&
-          e.target === e.currentTarget &&
-          e.propertyName === 'opacity'
-        ) {
-          onComplete();
-        }
-      }}
-      className={`fixed inset-0 z-[9999] bg-black transition-opacity duration-700 ease-out ${
-        fadeOut ? 'opacity-0 pointer-events-none' : 'opacity-100'
-      }`}
-      style={{
-        willChange: 'opacity',
-        transform: 'translateZ(0)',
-        backfaceVisibility: 'hidden',
-      }}
+    <section
+      className="relative min-h-screen flex items-center overflow-hidden"
+      dir={isRtl ? 'rtl' : 'ltr'}
     >
-      {/* ── Axis lines ── */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {/* Vertical axis */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-px h-full bg-gradient-to-b from-transparent via-[#d4af37]/15 to-transparent" />
-
-        {/* Upper line — touching triangle apex */}
-        <div
-          className="absolute left-0 w-full h-px"
-          style={{
-            top: 'calc(50% - 94px)',
-            background:
-              'linear-gradient(90deg, transparent 20%, rgba(212,175,55,0.12) 45%, rgba(212,175,55,0.25) 50%, rgba(212,175,55,0.12) 55%, transparent 80%)',
-          }}
-        />
-
-        {/* Lower line — touching triangle base */}
-        <div
-          className="absolute left-0 w-full h-px"
-          style={{
-            top: 'calc(50% + 4px)',
-            background:
-              'linear-gradient(90deg, transparent 20%, rgba(212,175,55,0.08) 45%, rgba(212,175,55,0.18) 50%, rgba(212,175,55,0.08) 55%, transparent 80%)',
-          }}
-        />
-
-        {/* Far accent lines */}
-        <div className="absolute top-[15%] left-0 w-full h-px bg-gradient-to-r from-transparent via-white/[0.02] to-transparent" />
-        <div className="absolute bottom-[15%] left-0 w-full h-px bg-gradient-to-r from-transparent via-white/[0.02] to-transparent" />
-      </div>
-
-      {/* ── Everything in one centered column ── */}
-      <div
-        className="absolute left-1/2 top-1/2 flex flex-col items-center"
-        style={{ transform: 'translate(-50%, -50%)' }}
-      >
-        {/* ── Symbol container ── */}
-        <div className="relative w-[140px] h-[140px] overflow-visible">
-          {/* Deep outer blur */}
+      {/* ── Backgrounds ── */}
+      <div className="absolute inset-0">
+        {/* First image always rendered for LCP */}
+        {backgrounds.map((bg, i) => (
           <div
-            className="absolute pointer-events-none animate-pulse"
-            style={{
-              top: '50%',
-              left: '50%',
-              width: 200,
-              height: 200,
-              transform: 'translate(-50%, -50%)',
-              background:
-                'radial-gradient(circle, rgba(212,175,55,0.12) 0%, rgba(212,175,55,0.04) 50%, transparent 70%)',
-              filter: 'blur(30px)',
-            }}
-          />
-
-          {/* Inner warm glow */}
-          <div
-            className="absolute rounded-full pointer-events-none"
-            style={{
-              top: '50%',
-              left: '50%',
-              width: 80,
-              height: 80,
-              transform: 'translate(-50%, -50%)',
-              background:
-                'radial-gradient(circle, rgba(244,185,66,0.2) 0%, rgba(212,175,55,0.08) 50%, transparent 70%)',
-              filter: 'blur(15px)',
-              animation: 'pulseGlow 3s ease-in-out infinite',
-            }}
-          />
-
-          {/* Triangle-shaped glow */}
-          <div
-            className="absolute pointer-events-none"
-            style={{
-              top: '50%',
-              left: '50%',
-              width: 100,
-              height: 90,
-              transform: 'translate(-50%, -45%)',
-              background:
-                'conic-gradient(from 210deg at 50% 35%, transparent 0deg, rgba(212,175,55,0.08) 60deg, transparent 120deg)',
-              filter: 'blur(20px)',
-              animation: 'pulseGlow 4s ease-in-out infinite 0.5s',
-            }}
-          />
-
-          {/* Orbit ring */}
-          <svg
-            viewBox="0 0 140 140"
-            className="absolute inset-0 w-full h-full pointer-events-none"
-            fill="none"
-            style={{ animation: 'spinCW 20s linear infinite' }}
-          >
-            <circle
-              cx="70"
-              cy="70"
-              r="66"
-              stroke="#C6A15B"
-              strokeWidth="0.3"
-              strokeDasharray="4 8"
-              opacity="0.25"
-            />
-            <circle cx="70" cy="4" r="1.5" fill="#d4af37" opacity="0.6" />
-          </svg>
-
-          {/* ── Triangle SVG ── */}
-          <svg
-            viewBox="0 0 120 120"
-            className="absolute z-10 pointer-events-none"
-            style={{
-              top: '50%',
-              left: '50%',
-              width: 140,
-              height: 140,
-              transform: 'translate3d(-50%, -50%, 0)',
-              willChange: 'transform, opacity',
-              backfaceVisibility: 'hidden',
-            }}
-            fill="none"
-            shapeRendering="geometricPrecision"
-          >
-            <defs>
-              <linearGradient id="triGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#F4B942" />
-                <stop offset="50%" stopColor="#d4af37" />
-                <stop offset="100%" stopColor="#C6A15B" stopOpacity="0.7" />
-              </linearGradient>
-            </defs>
-
-            {/* Outer triangle */}
-            <polygon
-              points="60,12 108,96 12,96"
-              pathLength="100"
-              stroke="url(#triGrad)"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              vectorEffect="non-scaling-stroke"
-              fill="none"
-              style={{
-                strokeDasharray: 100,
-                strokeDashoffset: 100,
-                opacity: 0,
-                willChange: 'stroke-dashoffset, opacity',
-                filter: 'drop-shadow(0 0 6px rgba(212,175,55,0.35))',
-                animation:
-                  'drawShapeSmooth 1.9s cubic-bezier(0.22,1,0.36,1) forwards 0.25s',
-              }}
-            />
-
-            {/* Corner dots */}
-            {[
-              { cx: 60, cy: 12, delay: '1.5s' },
-              { cx: 108, cy: 96, delay: '1.9s' },
-              { cx: 12, cy: 96, delay: '2.3s' },
-            ].map(({ cx, cy, delay }, i) => (
-              <g key={i}>
-                <circle
-                  cx={cx}
-                  cy={cy}
-                  r="4"
-                  fill="none"
-                  stroke="#F4B942"
-                  strokeWidth="0.3"
-                  style={{
-                    opacity: 0,
-                    animation: `fadeInDot 0.6s ease forwards ${delay}`,
-                  }}
-                />
-                <circle
-                  cx={cx}
-                  cy={cy}
-                  r="1.5"
-                  fill="#F4B942"
-                  style={{
-                    opacity: 0,
-                    animation: `fadeInDot 0.5s ease forwards ${delay}`,
-                  }}
-                />
-              </g>
-            ))}
-          </svg>
-
-          {/* ── LOGO ── */}
-          <div
-            className="absolute z-20 pointer-events-none"
-            style={{
-              top: '50%',
-              left: '50%',
-              width: 100,
-              height: 100,
-              transform: 'translate(-50%, -46%)',
-            }}
+            key={bg.url}
+            className="absolute inset-0 transition-opacity duration-1000"
+            style={{ opacity: activeBg === i ? 1 : 0 }}
           >
             <img
-              src="https://ik.imagekit.io/xkzwx3aiw/Logo.png?tr=w-96,f-webp,q-75"
-              alt="Triangle Black"
-              width={100}
-              height={100}
-              loading="eager"
-              decoding="async"
-              className="select-none w-full h-full"
-              style={{
-                objectFit: 'contain',
-                opacity: 0,
-                transform: 'scale(0.5)',
-                animation: 'logoIn 1s cubic-bezier(0.16,1,0.3,1) forwards 0.6s',
-                filter: 'drop-shadow(0 0 15px rgba(212,175,55,0.45))',
-              }}
+              src={bg.url}
+              alt={t.hero[bg.nameKey as keyof typeof t.hero] as string}
+              className="w-full h-full object-cover object-center"
+              loading={i === 0 ? 'eager' : 'lazy'}
+              decoding={i === 0 ? 'sync' : 'async'}
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              {...(i === 0 ? { fetchPriority: 'high' } as any : { fetchPriority: 'low' } as any)}
+              width="1400"
+              height="900"
             />
           </div>
-        </div>
+        ))}
+        {/* Dark overlay */}
+        <div className="absolute inset-0 bg-black/60" />
+        {/* Bottom gradient */}
+        <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-black to-transparent" />
+      </div>
 
-        {/* ── Brand text — original style restored ── */}
-        <div className="mt-1 -translate-y-1 text-center space-y-2">
-          <h1
-            className="text-2xl sm:text-3xl font-bold tracking-[0.3em] text-[#d4af37] uppercase"
-            style={{
-              fontFamily: 'Georgia, serif',
-              opacity: 0,
-              animation: 'slideUp 0.4s ease forwards 0.9s',
-            }}
-          >
-            TRIANGLE BLACK
-          </h1>
+      {/* ── Light grid overlay ── */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          backgroundImage: 'linear-gradient(rgba(212,175,55,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(212,175,55,0.03) 1px, transparent 1px)',
+          backgroundSize: '60px 60px',
+        }}
+      />
 
-          <div
-            className="h-px mx-auto"
-            style={{
-              width: 220,
-              background:
-                'linear-gradient(90deg, transparent, rgba(212,175,55,0.5), transparent)',
-              opacity: 0,
-              transform: 'scaleX(0)',
-              animation: 'lineGrow 0.5s ease forwards 1.1s',
-            }}
-          />
-
-          <p
-            className="text-[9px] sm:text-[10px] tracking-[0.35em] text-white/40 uppercase font-sans"
-            style={{
-              opacity: 0,
-              animation: 'slideUp 0.4s ease forwards 1.3s',
-            }}
-          >
-            Hospitality Engineering Initialization
-          </p>
+      {/* ── Scene selector ── */}
+      <div className={`absolute bottom-24 ${isRtl ? 'left-6 sm:left-10' : 'right-6 sm:right-10'} z-10 flex flex-col items-end gap-2`}>
+        <span className="text-[9px] uppercase tracking-[0.3em] text-white/40 font-mono">{t.hero.activeScene}</span>
+        <div className="flex items-center gap-1.5">
+          {backgrounds.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setActiveBg(i)}
+              className="rounded-full transition-all duration-300"
+              style={{
+                width: activeBg === i ? 20 : 5,
+                height: 4,
+                backgroundColor: activeBg === i ? '#d4af37' : 'rgba(255,255,255,0.25)',
+              }}
+            />
+          ))}
         </div>
       </div>
 
-      <style>{`
-        @keyframes drawShapeSmooth {
-          0% {
-            stroke-dashoffset: 100;
-            opacity: 0;
-          }
-          12% {
-            opacity: 1;
-          }
-          100% {
-            stroke-dashoffset: 0;
-            opacity: 1;
-          }
-        }
+      {/* ── Main Content ── */}
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 pt-24 pb-16">
+        {ready && (
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: EASE }}
+          >
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2.5 mb-6 px-4 py-2 rounded-full bg-[#d4af37]/10 border border-[#d4af37]/20 backdrop-blur-sm">
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#d4af37] opacity-60" />
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[#d4af37]" />
+              </span>
+              <span className="text-[10px] font-bold uppercase tracking-[0.35em] text-[#d4af37] font-mono">
+                {t.hero.badge}
+              </span>
+            </div>
 
-        @keyframes fadeInDot {
-          to { opacity: 0.8; }
-        }
+            {/* Headline */}
+            <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold leading-[1.05] text-white mb-6 max-w-4xl">
+              {t.hero.headline.split(' ').slice(0, -1).join(' ')}{' '}
+              <span className="italic gold-text">{t.hero.headline.split(' ').slice(-1)}</span>
+            </h1>
 
-        @keyframes logoIn {
-          0%   { opacity: 0; transform: scale(0.5); }
-          100% { opacity: 1; transform: scale(1); }
-        }
+            {/* Description */}
+            <p className="max-w-2xl text-sm sm:text-base text-white/65 mb-10 leading-relaxed">
+              {t.hero.desc}
+            </p>
 
-        @keyframes spinCW {
-          to { transform: rotate(360deg); }
-        }
+            {/* CTAs */}
+            <div className={`flex flex-wrap gap-3 mb-16 ${isRtl ? 'flex-row-reverse' : ''}`}>
+              <motion.button
+                onClick={() => handleNav('contact')}
+                className="group flex items-center gap-2 px-7 py-3.5 bg-gradient-to-r from-[#d4af37] to-[#e6ca65] text-black font-bold text-sm uppercase tracking-wider rounded-full"
+                whileHover={{ scale: 1.04, boxShadow: '0 16px 32px rgba(212,175,55,0.3)' }}
+                whileTap={{ scale: 0.97 }}
+              >
+                {t.hero.ctaPrimary}
+                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
+              </motion.button>
 
-        @keyframes slideUp {
-          0%   { opacity: 0; transform: translateY(10px); }
-          100% { opacity: 1; transform: translateY(0); }
-        }
+              <motion.button
+                onClick={() => handleNav('projects')}
+                className="px-7 py-3.5 border border-white/25 text-white font-bold text-sm uppercase tracking-wider rounded-full hover:border-[#d4af37]/50 hover:text-[#d4af37] transition-colors duration-300"
+                whileHover={{ scale: 1.04 }}
+                whileTap={{ scale: 0.97 }}
+              >
+                {t.hero.ctaSecondary}
+              </motion.button>
+            </div>
 
-        @keyframes lineGrow {
-          0%   { opacity: 0; transform: scaleX(0); }
-          100% { opacity: 1; transform: scaleX(1); }
-        }
+            {/* KPI Stats */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl">
+              {kpis.map((kpi, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.3 + i * 0.1, ease: EASE }}
+                  className="relative p-4 rounded-xl border border-white/8 bg-white/5 backdrop-blur-sm"
+                >
+                  <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-[#d4af37]/40 to-transparent rounded-t-xl" />
+                  <div className="font-serif text-xl sm:text-2xl font-bold text-[#d4af37] leading-none mb-1">
+                    {kpi.val}
+                  </div>
+                  <div className="text-[9px] sm:text-[10px] text-white/50 uppercase tracking-wider font-mono leading-tight">
+                    {kpi.sub}
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </div>
 
-        @keyframes pulseGlow {
-          0%, 100% { opacity: 0.7; transform: translate(-50%, -50%) scale(1); }
-          50%      { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
-        }
-      `}</style>
-    </div>
+      {/* ── Scroll indicator ── */}
+      <button
+        onClick={() => handleNav('about')}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2 text-white/40 hover:text-[#d4af37] transition-colors duration-300"
+      >
+        <span className="text-[9px] uppercase tracking-[0.25em] font-mono">{t.hero.scrollLabel}</span>
+        <ChevronDown className="w-4 h-4 animate-bounce" />
+      </button>
+    </section>
   );
 };
