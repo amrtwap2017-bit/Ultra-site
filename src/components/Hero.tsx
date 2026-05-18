@@ -9,28 +9,51 @@ interface HeroProps {
   currentLang: Lang;
 }
 
-const backgroundOptions = [
+// ── Typed background option ──
+interface BackgroundOption {
+  id: string;
+  nameKey: string;
+  url: string;
+  srcSet: string;
+}
+
+const backgroundOptions: BackgroundOption[] = [
   {
     id: 'corridor',
     nameKey: 'sceneDelivery',
-    url: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=2000&q=85',
+    url: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1024&q=55&fm=webp',
+    srcSet: [
+      'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=640&q=50&fm=webp 640w',
+      'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1024&q=55&fm=webp 1024w',
+      'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1440&q=60&fm=webp 1440w',
+    ].join(', '),
   },
   {
     id: 'hvac',
     nameKey: 'sceneQuality',
-    url: 'https://images.unsplash.com/photo-1581094288338-2314dddb7ece?auto=format&fit=crop&w=2000&q=85',
+    url: 'https://images.unsplash.com/photo-1581094288338-2314dddb7ece?auto=format&fit=crop&w=1024&q=55&fm=webp',
+    srcSet: [
+      'https://images.unsplash.com/photo-1581094288338-2314dddb7ece?auto=format&fit=crop&w=640&q=50&fm=webp 640w',
+      'https://images.unsplash.com/photo-1581094288338-2314dddb7ece?auto=format&fit=crop&w=1024&q=55&fm=webp 1024w',
+      'https://images.unsplash.com/photo-1581094288338-2314dddb7ece?auto=format&fit=crop&w=1440&q=60&fm=webp 1440w',
+    ].join(', '),
   },
   {
     id: 'lounge',
     nameKey: 'sceneTrusted',
-    url: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=2000&q=85',
+    url: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1024&q=55&fm=webp',
+    srcSet: [
+      'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=640&q=50&fm=webp 640w',
+      'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1024&q=55&fm=webp 1024w',
+      'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1440&q=60&fm=webp 1440w',
+    ].join(', '),
   },
 ];
 
 const SLIDE_DURATION = 9000;
 const EASE: [number, number, number, number] = [0.25, 0.46, 0.45, 0.94];
 
-/* ── Lightweight particles — only 2 layers, minimal count ── */
+/* ── Lightweight particles — only 2 layers ── */
 const PARTICLES = {
   sparkles: Array.from({ length: 5 }, (_, i) => ({
     id: `s-${i}`,
@@ -51,7 +74,19 @@ const PARTICLES = {
 };
 
 const TinySparkle = memo(
-  ({ x, y, delay, duration, repeat }: { x: number; y: number; delay: number; duration: number; repeat: number }) => (
+  ({
+    x,
+    y,
+    delay,
+    duration,
+    repeat,
+  }: {
+    x: number;
+    y: number;
+    delay: number;
+    duration: number;
+    repeat: number;
+  }) => (
     <motion.div
       className="absolute pointer-events-none"
       style={{
@@ -64,13 +99,31 @@ const TinySparkle = memo(
         background: '#d4af37',
       }}
       animate={{ opacity: [0, 0.7, 0], scale: [0, 1.2, 0] }}
-      transition={{ duration, delay, repeat: Infinity, repeatDelay: repeat, ease: 'easeInOut' }}
+      transition={{
+        duration,
+        delay,
+        repeat: Infinity,
+        repeatDelay: repeat,
+        ease: 'easeInOut',
+      }}
     />
   )
 );
 
 const ConstellationDot = memo(
-  ({ x, y, size, delay, duration }: { x: number; y: number; size: number; delay: number; duration: number }) => (
+  ({
+    x,
+    y,
+    size,
+    delay,
+    duration,
+  }: {
+    x: number;
+    y: number;
+    size: number;
+    delay: number;
+    duration: number;
+  }) => (
     <motion.div
       className="absolute rounded-full pointer-events-none"
       style={{
@@ -88,11 +141,11 @@ const ConstellationDot = memo(
 );
 
 /* ── Word-by-word headline ── */
-const WordReveal: React.FC<{ text: string; highlightLastN?: number; delay?: number }> = ({
-  text,
-  highlightLastN = 2,
-  delay = 0,
-}) => {
+const WordReveal: React.FC<{
+  text: string;
+  highlightLastN?: number;
+  delay?: number;
+}> = ({ text, highlightLastN = 2, delay = 0 }) => {
   const words = text.split(' ');
   const splitIndex = words.length - highlightLastN;
   return (
@@ -109,7 +162,8 @@ const WordReveal: React.FC<{ text: string; highlightLastN?: number; delay?: numb
             <span
               className="italic"
               style={{
-                background: 'linear-gradient(135deg,#d4af37 0%,#f0d060 50%,#d4af37 100%)',
+                background:
+                  'linear-gradient(135deg,#d4af37 0%,#f0d060 50%,#d4af37 100%)',
                 backgroundSize: '200% auto',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
@@ -130,7 +184,11 @@ const WordReveal: React.FC<{ text: string; highlightLastN?: number; delay?: numb
 };
 
 /* ── Count-up ── */
-const CountUp: React.FC<{ value: string; inView: boolean; delay: number }> = ({ value, inView, delay }) => {
+const CountUp: React.FC<{
+  value: string;
+  inView: boolean;
+  delay: number;
+}> = ({ value, inView, delay }) => {
   const numeric = parseFloat(value.replace(/[^0-9.]/g, ''));
   const suffix = value.replace(/[0-9.]/g, '').replace('+', '');
   const hasPlus = value.includes('+');
@@ -147,7 +205,9 @@ const CountUp: React.FC<{ value: string; inView: boolean; delay: number }> = ({ 
       if (!start) start = ts;
       const p = Math.min((ts - start) / 1800, 1);
       const eased = 1 - Math.pow(1 - p, 3);
-      setDisplay(`${Math.floor(eased * numeric)}${suffix}${hasPlus ? '+' : ''}`);
+      setDisplay(
+        `${Math.floor(eased * numeric)}${suffix}${hasPlus ? '+' : ''}`
+      );
       if (p < 1) raf = requestAnimationFrame(run);
       else setDisplay(value);
     };
@@ -164,7 +224,7 @@ const CountUp: React.FC<{ value: string; inView: boolean; delay: number }> = ({ 
 };
 
 /* ══════════════════════════════════════════════
-   MAIN HERO — REBUILT LEAN
+   MAIN HERO
 ══════════════════════════════════════════════ */
 export const Hero: React.FC<HeroProps> = ({ t, setActiveTab, currentLang }) => {
   const [activeBg, setActiveBg] = useState(0);
@@ -174,28 +234,36 @@ export const Hero: React.FC<HeroProps> = ({ t, setActiveTab, currentLang }) => {
 
   const isRtl = currentLang === 'ar';
 
+  /* ── Preload all background images ── */
   useEffect(() => {
-    const img = new Image();
-    img.src = backgroundOptions[0].url;
-    img.onload = () => setImageReady(true);
-    img.onerror = () => setImageReady(true);
+    // Preload first image eagerly
+    const first = new Image();
+    first.src = backgroundOptions[0].url;
+    first.onload = () => setImageReady(true);
+    first.onerror = () => setImageReady(true);
+
+    // Preload rest lazily
     backgroundOptions.slice(1).forEach((bg) => {
-      const p = new Image();
-      p.src = bg.url;
+      const img = new Image();
+      img.src = bg.url;
     });
+
+    // Safety fallback
     const fallback = setTimeout(() => setImageReady(true), 4000);
     return () => clearTimeout(fallback);
   }, []);
 
+  /* ── Auto-advance slides ── */
   useEffect(() => {
     if (!imageReady) return;
     const id = setInterval(() => {
       setDirection(1);
-      setActiveBg((p) => (p + 1) % backgroundOptions.length);
+      setActiveBg((prev) => (prev + 1) % backgroundOptions.length);
     }, SLIDE_DURATION);
     return () => clearInterval(id);
   }, [imageReady]);
 
+  /* ── Trigger KPI count-up ── */
   useEffect(() => {
     if (!imageReady) return;
     const id = setTimeout(() => setKpiVisible(true), 1200);
@@ -227,17 +295,31 @@ export const Hero: React.FC<HeroProps> = ({ t, setActiveTab, currentLang }) => {
     [setActiveTab]
   );
 
-  const getSceneName = (key: string) => (t.hero[key as keyof typeof t.hero] as string) || key;
+  const getSceneName = (key: string) =>
+    (t.hero[key as keyof typeof t.hero] as string) || key;
 
+  /* ── Slide animation variants ── */
   const bgEnter = (d: number) => ({ opacity: 0, x: d > 0 ? 40 : -40 });
   const bgCenter = { opacity: 1, x: 0, transition: { duration: 1, ease: EASE } };
-  const bgExit = (d: number) => ({ opacity: 0, x: d > 0 ? -40 : 40, transition: { duration: 0.8, ease: EASE } });
+  const bgExit = (d: number) => ({
+    opacity: 0,
+    x: d > 0 ? -40 : 40,
+    transition: { duration: 0.8, ease: EASE },
+  });
 
   return (
-    <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      <style>{`@keyframes shimmer{0%{background-position:-200% center}100%{background-position:200% center}}`}</style>
+    <section
+      id="home"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+    >
+      <style>{`
+        @keyframes shimmer {
+          0%   { background-position: -200% center; }
+          100% { background-position:  200% center; }
+        }
+      `}</style>
 
-      {/* Black base */}
+      {/* Base */}
       <div className="absolute inset-0 bg-black z-0" />
 
       {/* Background slides */}
@@ -245,17 +327,22 @@ export const Hero: React.FC<HeroProps> = ({ t, setActiveTab, currentLang }) => {
         <motion.div
           key={activeBg}
           custom={direction}
-          initial={imageReady ? bgEnter(direction) : { opacity: 0, x: 0 }}
+          initial={
+            imageReady ? bgEnter(direction) : { opacity: 0, x: 0 }
+          }
           animate={bgCenter}
           exit={bgExit(direction)}
           className="absolute inset-0 z-[1]"
         >
           <motion.img
             src={backgroundOptions[activeBg].url}
+            srcSet={backgroundOptions[activeBg].srcSet}
+            sizes="100vw"
             alt={getSceneName(backgroundOptions[activeBg].nameKey)}
             className="w-full h-full object-cover object-center"
             loading="eager"
             decoding="async"
+            fetchPriority="high"
             initial={{ opacity: 0 }}
             animate={{ opacity: imageReady ? 1 : 0 }}
             transition={{ duration: 0.8, ease: 'easeOut' }}
@@ -265,24 +352,40 @@ export const Hero: React.FC<HeroProps> = ({ t, setActiveTab, currentLang }) => {
         </motion.div>
       </AnimatePresence>
 
-      {/* Particles — only 2 lightweight layers */}
+      {/* Particles */}
       <div className="absolute inset-0 z-[12] pointer-events-none overflow-hidden">
         {PARTICLES.sparkles.map((p) => (
-          <TinySparkle key={p.id} x={p.x} y={p.y} delay={p.delay} duration={p.duration} repeat={p.repeat} />
+          <TinySparkle
+            key={p.id}
+            x={p.x}
+            y={p.y}
+            delay={p.delay}
+            duration={p.duration}
+            repeat={p.repeat}
+          />
         ))}
         {PARTICLES.dots.map((p) => (
-          <ConstellationDot key={p.id} x={p.x} y={p.y} size={p.size} delay={p.delay} duration={p.duration} />
+          <ConstellationDot
+            key={p.id}
+            x={p.x}
+            y={p.y}
+            size={p.size}
+            delay={p.delay}
+            duration={p.duration}
+          />
         ))}
       </div>
 
-      {/* Single decorative ring */}
+      {/* Decorative ring */}
       <motion.div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] border border-[#d4af37]/[0.06] rounded-full pointer-events-none z-[14]"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
+                   w-[500px] h-[500px] border border-[#d4af37]/[0.06]
+                   rounded-full pointer-events-none z-[14]"
         animate={{ scale: [1, 1.03, 1], opacity: [0.3, 0.7, 0.3] }}
         transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
       />
 
-      {/* Scene selector */}
+      {/* Scene selector — top right */}
       <motion.div
         initial={{ opacity: 0, x: 16 }}
         animate={{ opacity: imageReady ? 1 : 0, x: imageReady ? 0 : 16 }}
@@ -310,9 +413,15 @@ export const Hero: React.FC<HeroProps> = ({ t, setActiveTab, currentLang }) => {
               key={i}
               onClick={() => handleBgChange(i)}
               className={`rounded-full transition-colors duration-300 ${
-                i === activeBg ? 'bg-[#d4af37]' : 'bg-neutral-700 hover:bg-neutral-500'
+                i === activeBg
+                  ? 'bg-[#d4af37]'
+                  : 'bg-neutral-700 hover:bg-neutral-500'
               }`}
-              animate={i === activeBg ? { width: 20, height: 4 } : { width: 4, height: 4 }}
+              animate={
+                i === activeBg
+                  ? { width: 20, height: 4 }
+                  : { width: 4, height: 4 }
+              }
               transition={{ duration: 0.4, ease: EASE }}
             />
           ))}
@@ -332,7 +441,8 @@ export const Hero: React.FC<HeroProps> = ({ t, setActiveTab, currentLang }) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: imageReady ? 1 : 0 }}
           transition={{ duration: 0.8, delay: 0.8 }}
-          className="text-[10px] tracking-[0.3em] uppercase text-white/40 [writing-mode:vertical-lr] rotate-180"
+          className="text-[10px] tracking-[0.3em] uppercase text-white/40
+                     [writing-mode:vertical-lr] rotate-180"
         >
           {t.hero.scrollLabel}
         </motion.span>
@@ -345,7 +455,7 @@ export const Hero: React.FC<HeroProps> = ({ t, setActiveTab, currentLang }) => {
         />
       </div>
 
-      {/* Main content */}
+      {/* ── Main content ── */}
       <div
         className="relative z-20 max-w-6xl mx-auto px-6 lg:px-8 text-center pt-24 pb-32 w-full"
         dir={isRtl ? 'rtl' : 'ltr'}
@@ -387,7 +497,13 @@ export const Hero: React.FC<HeroProps> = ({ t, setActiveTab, currentLang }) => {
 
         {/* Headline */}
         <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.15] mb-8">
-          {imageReady && <WordReveal text={t.hero.headline} highlightLastN={2} delay={0.2} />}
+          {imageReady && (
+            <WordReveal
+              text={t.hero.headline}
+              highlightLastN={2}
+              delay={0.2}
+            />
+          )}
         </h1>
 
         {/* Description */}
@@ -446,10 +562,16 @@ export const Hero: React.FC<HeroProps> = ({ t, setActiveTab, currentLang }) => {
           ].map((kpi, i) => (
             <div key={i} className="text-center">
               <div className="text-2xl sm:text-3xl font-bold text-[#d4af37] font-serif">
-                <CountUp value={kpi.val} inView={kpiVisible} delay={i * 0.12} />
+                <CountUp
+                  value={kpi.val}
+                  inView={kpiVisible}
+                  delay={i * 0.12}
+                />
               </div>
               <div className="h-px w-8 bg-[#d4af37]/30 mx-auto mt-2 mb-1" />
-              <div className="text-[10px] text-white/50 uppercase tracking-wider mt-1">{kpi.sub}</div>
+              <div className="text-[10px] text-white/50 uppercase tracking-wider mt-1">
+                {kpi.sub}
+              </div>
             </div>
           ))}
         </motion.div>
@@ -463,17 +585,26 @@ export const Hero: React.FC<HeroProps> = ({ t, setActiveTab, currentLang }) => {
           onClick={() => handleNav('about')}
         >
           <motion.span
-            className="text-[9px] uppercase tracking-[0.3em] text-white/30 group-hover:text-[#d4af37]/60 transition-colors duration-300"
+            className="text-[9px] uppercase tracking-[0.3em] text-white/30
+                       group-hover:text-[#d4af37]/60 transition-colors duration-300"
             animate={{ opacity: [0.3, 0.9, 0.3] }}
             transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
           >
             {t.hero.scrollLabel}
           </motion.span>
-          <div className="w-5 h-8 rounded-full border border-white/20 group-hover:border-[#d4af37]/40 flex items-start justify-center pt-1 transition-colors duration-300">
+          <div
+            className="w-5 h-8 rounded-full border border-white/20
+                       group-hover:border-[#d4af37]/40 flex items-start
+                       justify-center pt-1 transition-colors duration-300"
+          >
             <motion.div
               className="w-0.5 h-2 rounded-full bg-[#d4af37]/60"
               animate={{ y: [0, 10, 0], opacity: [1, 0.2, 1] }}
-              transition={{ duration: 1.7, repeat: Infinity, ease: 'easeInOut' }}
+              transition={{
+                duration: 1.7,
+                repeat: Infinity,
+                ease: 'easeInOut',
+              }}
             />
           </div>
         </motion.div>
