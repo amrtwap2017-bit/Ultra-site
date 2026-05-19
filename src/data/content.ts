@@ -47,8 +47,8 @@ export interface Translation {
     services: string;
     projects: string;
     contact: string;
-    deploy: string;
     quote: string;
+    getQuote: string;
   };
   hero: {
     badge: string;
@@ -505,8 +505,8 @@ export const translations: Record<Lang, Translation> = {
       services: 'Services',
       projects: 'Projects',
       contact: 'Contact',
-      deploy: 'Deploy',
       quote: 'Quote',
+      getQuote: 'Get a Quote',
     },
     hero: {
       badge: 'Premium Engineering Solutions',
@@ -700,8 +700,8 @@ export const translations: Record<Lang, Translation> = {
       services: 'الخدمات',
       projects: 'المشاريع',
       contact: 'اتصل بنا',
-      deploy: 'النشر',
       quote: 'عرض سعر',
+      getQuote: 'طلب عرض سعر',
     },
     hero: {
       badge: 'حلول هندسية متميزة',
@@ -895,8 +895,9 @@ export const translations: Record<Lang, Translation> = {
       services: 'Servizi',
       projects: 'Progetti',
       contact: 'Contatto',
-      deploy: 'Deploy',
       quote: 'Preventivo',
+      getQuote: 'Ottieni un preventivo',
+
     },
     hero: {
       badge: 'Soluzioni Ingegneristiche Premium',

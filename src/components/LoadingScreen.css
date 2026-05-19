@@ -1,0 +1,360 @@
+/* ============================================================
+   LoadingScreen.css — Triangle Black
+   Fast, impactful, luxury brand stamp
+   ============================================================ */
+
+/* ── Root ── */
+.lb-root {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  height: 100dvh;
+  background: #000;
+  contain: paint;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  transition: opacity 500ms ease-out;
+  opacity: 1;
+}
+
+.lb-root--out {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ── Axis layer ── */
+.lb-axis-layer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.lb-axis-vertical {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 1px;
+  height: 100%;
+  transform: translateX(-50%) translateZ(0);
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(212, 175, 55, 0.12),
+    transparent
+  );
+}
+
+.lb-axis-h1 {
+  position: absolute;
+  left: 0;
+  top: calc(50% - 94px);
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 20%,
+    rgba(212, 175, 55, 0.10) 45%,
+    rgba(212, 175, 55, 0.20) 50%,
+    rgba(212, 175, 55, 0.10) 55%,
+    transparent 80%
+  );
+}
+
+.lb-axis-h2 {
+  position: absolute;
+  left: 0;
+  top: calc(50% + 4px);
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 20%,
+    rgba(212, 175, 55, 0.06) 45%,
+    rgba(212, 175, 55, 0.14) 50%,
+    rgba(212, 175, 55, 0.06) 55%,
+    transparent 80%
+  );
+}
+
+.lb-axis-top {
+  position: absolute;
+  top: 15%;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(255, 255, 255, 0.02),
+    transparent
+  );
+}
+
+.lb-axis-bottom {
+  position: absolute;
+  bottom: 15%;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(255, 255, 255, 0.02),
+    transparent
+  );
+}
+
+/* ── Stage ── */
+.lb-stage {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate3d(-50%, -50%, 0);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ── Symbol ── */
+.lb-symbol {
+  position: relative;
+  width: 180px;
+  height: 180px;
+  overflow: visible;
+}
+
+/* ── Single ambient glow — simple, always visible ── */
+.lb-glow-outer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 220px;
+  height: 220px;
+  transform: translate(-50%, -50%) translateZ(0);
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(
+    circle,
+    rgba(212, 175, 55, 0.10) 0%,
+    rgba(212, 175, 55, 0.03) 50%,
+    transparent 70%
+  );
+}
+
+/* ── Orbit ring ── */
+.lb-orbit {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* ── Triangle SVG ── */
+.lb-triangle-svg {
+  position: absolute;
+  z-index: 10;
+  top: 50%;
+  left: 50%;
+  width: 175px;
+  height: 175px;
+  transform: translate3d(-50%, -50%, 0);
+  contain: layout paint;
+  pointer-events: none;
+}
+
+.lb-triangle-path {
+  stroke-dasharray: 310;
+  stroke-dashoffset: 310;
+  opacity: 0;
+  transform: translateZ(0);
+  will-change: stroke-dashoffset, opacity;
+}
+
+.lb-dot {
+  opacity: 0;
+}
+
+/* ── Logo wrapper ── */
+.lb-logo-wrap {
+  position: absolute;
+  z-index: 20;
+  top: 50%;
+  left: 50%;
+  width: 160px;
+  height: 160px;
+  transform: translate3d(-50%, -50%, 0);
+  pointer-events: none;
+}
+
+/* Logo glow — blooms via keyframe */
+.lb-logo-glow {
+  position: absolute;
+  inset: -20%;
+  border-radius: 50%;
+  opacity: 0;
+  background: radial-gradient(
+    circle,
+    rgba(212, 175, 55, 0.25) 0%,
+    rgba(212, 175, 55, 0.10) 40%,
+    transparent 70%
+  );
+}
+
+/* Logo image */
+.lb-logo-img {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0;
+  transform: scale(0.7) translateZ(0);
+  will-change: transform, opacity;
+  user-select: none;
+}
+
+/* ── Text block ── */
+.lb-text-block {
+  margin-top: 0.5rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.lb-brand-name {
+  font-size: clamp(1.25rem, 4vw, 1.875rem);
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  color: #d4af37;
+  text-transform: uppercase;
+  font-family: Georgia, serif;
+  opacity: 0;
+  margin: 0;
+}
+
+.lb-divider {
+  width: 220px;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(212, 175, 55, 0.45),
+    transparent
+  );
+  opacity: 0;
+  transform: scaleX(0);
+}
+
+.lb-tagline {
+  font-size: clamp(0.5625rem, 1.5vw, 0.625rem);
+  letter-spacing: 0.35em;
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: uppercase;
+  font-family: sans-serif;
+  opacity: 0;
+  margin: 0;
+}
+
+/* ============================================================
+   Keyframes — Fast, decisive, luxury
+   ============================================================ */
+
+/* Triangle draws in 0.7s */
+@keyframes drawTriangleSmooth {
+  0% {
+    stroke-dashoffset: 310;
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+
+/* Reduced motion — instant */
+@keyframes drawTriangleFast {
+  0% {
+    stroke-dashoffset: 310;
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+
+/* Glow blooms then settles — 0.8s total */
+@keyframes glowPulseIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 0.7;
+    transform: scale(1.0);
+  }
+}
+
+/* Logo appears decisively — 0.6s */
+@keyframes logoIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.7) translateZ(0);
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateZ(0);
+  }
+}
+
+/* Text slides up quickly */
+@keyframes slideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Fade only — accessibility */
+@keyframes fadeOnly {
+  0%   { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+/* Divider expands */
+@keyframes lineGrow {
+  0% {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}
+
+/* Dot entrance */
+@keyframes fadeInDot {
+  0%   { opacity: 0; }
+  100% { opacity: 1; }
+}
