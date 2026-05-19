@@ -6,6 +6,7 @@ import {
   projectsData,
   ProjectItem,
 } from '../data/content';
+import './Project.css';
 import {
   MapPin,
   X,
@@ -807,26 +808,6 @@ export const Projects: React.FC<ProjectsProps> = ({ t, currentLang }) => {
       </AnimatePresence>
 
       {/* Shimmer keyframe */}
-      <style>{`
-        @keyframes goldShimmer {
-          0%   { background-position: -200% center; }
-          100% { background-position:  200% center; }
-        }
-        .custom-scrollbar::-webkit-scrollbar {
-          width: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: rgba(20,20,20,0.5);
-          border-radius: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: rgba(212,175,55,0.2);
-          border-radius: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: rgba(212,175,55,0.4);
-        }
-      `}</style>
     </section>
   );
 };

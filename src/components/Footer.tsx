@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { Translation, resourceLinks as resourceLinksData } from '../data/content';
+import './all.css';
 import {
   ArrowUp,
   ArrowUpRight,
@@ -542,13 +543,6 @@ export const Footer: React.FC<FooterProps> = ({
         <ArrowUp className="w-4 h-4" />
       </motion.button>
 
-      {/* Shimmer keyframe */}
-      <style>{`
-        @keyframes goldShimmer {
-          0%   { background-position: -200% center; }
-          100% { background-position:  200% center; }
-        }
-      `}</style>
     </footer>
   );
 };

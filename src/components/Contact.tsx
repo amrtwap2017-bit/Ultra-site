@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
 import { Translation, Lang, servicesData } from '../data/content';
+import './all.css';
 import {
   Send,
   Mail,
@@ -712,12 +713,7 @@ export const Contact: React.FC<ContactProps> = ({
       </div>
 
       {/* Shimmer keyframe */}
-      <style>{`
-        @keyframes goldShimmer {
-          0%   { background-position: -200% center; }
-          100% { background-position:  200% center; }
-        }
-      `}</style>
+      
     </section>
   );
 };

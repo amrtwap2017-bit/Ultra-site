@@ -6,6 +6,8 @@ import {
 } from 'framer-motion';
 import {  ArrowRight } from 'lucide-react';
 import { Translation } from '../data/content';
+import './all.css';
+
 
 interface HighlightProps {
   t: Translation;
@@ -840,13 +842,6 @@ export const Highlight: React.FC<HighlightProps> = ({ t, currentLang }) => {
           <GoldDivider inView={isInView} delay={1.1} />
         </motion.div>
       </div>
-
-      <style>{`
-        @keyframes goldShimmer {
-          0%   { background-position: -200% center; }
-          100% { background-position:  200% center; }
-        }
-      `}</style>
     </section>
   );
 };

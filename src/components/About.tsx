@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
 import { Translation, hospitalityClients } from '../data/content';
+import './all.css';
 import {
   CheckCircle2,
   Target,
@@ -761,13 +762,6 @@ export const About: React.FC<AboutProps> = ({ t, currentLang }) => {
         </div>
       </div>
 
-      {/* Shimmer keyframe */}
-      <style>{`
-        @keyframes goldShimmer {
-          0%   { background-position: -200% center; }
-          100% { background-position:  200% center; }
-        }
-      `}</style>
     </section>
   );
 };

@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
+import './all.css';
 import {
   Translation,
   Lang,
@@ -610,14 +611,6 @@ export const Services: React.FC<ServicesProps> = ({
           </div>
         </motion.div>
       </div>
-
-      {/* Shimmer keyframe */}
-      <style>{`
-        @keyframes goldShimmer {
-          0%   { background-position: -200% center; }
-          100% { background-position:  200% center; }
-        }
-      `}</style>
     </section>
   );
 };
