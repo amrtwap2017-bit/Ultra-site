@@ -153,16 +153,16 @@
   z-index: 10;
   top: 50%;
   left: 50%;
-  width: 175px;
-  height: 175px;
+  width: 200px;      /* wider than logo (160px) for free space */
+  height: 220px;     /* taller than logo (180px) for free space */
   transform: translate3d(-50%, -50%, 0);
   contain: layout paint;
   pointer-events: none;
 }
 
 .lb-triangle-path {
-  stroke-dasharray: 310;
-  stroke-dashoffset: 310;
+  stroke-dasharray: 420;    /* updated for new path length */
+  stroke-dashoffset: 420;
   opacity: 0;
   transform: translateZ(0);
   will-change: stroke-dashoffset, opacity;
@@ -290,7 +290,7 @@
 /* ── Triangle path drawing ── */
 @keyframes drawTriangleSmooth {
   0% {
-    stroke-dashoffset: 310;
+    stroke-dashoffset: 420;
     opacity: 0;
   }
   1% {
@@ -304,7 +304,7 @@
 
 @keyframes drawTriangleFast {
   0% {
-    stroke-dashoffset: 310;
+    stroke-dashoffset: 420;
     opacity: 0;
   }
   1% {

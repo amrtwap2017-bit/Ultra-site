@@ -150,8 +150,8 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ onComplete }) => {
               className="lb-triangle-path"
               style={{
                 animation: r
-                  ? 'drawTriangleFast 0.3s ease forwards'
-                  : 'drawTriangleSmooth 0.7s cubic-bezier(0.25,0.46,0.45,0.94) forwards',
+                  ? 'drawTriangleFast 0.2s ease forwards'
+                  : 'drawTriangleSmooth 0.5s cubic-bezier(0.25,0.46,0.45,0.94) forwards',
               }}
             />
 
@@ -197,7 +197,7 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ onComplete }) => {
               src={logo}
               alt="Triangle Black luxury brand logo"
               width={160}
-              height={180}
+              height={160}
               loading="eager"
               decoding="async"
               className="lb-logo-img"
