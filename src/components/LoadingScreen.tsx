@@ -42,14 +42,14 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ onComplete }) => {
     return () => mq.removeEventListener('change', update);
   }, []);
 
-  // ── Simple timeline: show 1.8s → fade 0.5s ──
+  // ── Simple timeline: show 2.2s → fade 0.5s ──
   useEffect(() => {
     if (hasVisited.current) return;
 
     const timer = setTimeout(() => {
       sessionStorage.setItem('tb-loader', '1');
       setFadeOut(true);
-    }, 1800);
+    }, 2200);
 
     return () => clearTimeout(timer);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -88,16 +88,30 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ onComplete }) => {
       <div className="lb-stage" aria-hidden="true">
         <div className="lb-symbol">
 
-          {/* Ambient glow — desktop only, appears instantly */}
-          {!isMobile && <div className="lb-glow-outer" />}
+          {/* Ambient glow — desktop only, appears with logo */}
+          {!isMobile && (
+            <div 
+              className="lb-glow-outer"
+              style={{
+                animation: r 
+                  ? 'none' 
+                  : 'glowCircleIn 0.6s cubic-bezier(0.16,1,0.3,1) forwards',
+              }}
+            />
+          )}
 
-          {/* Orbit ring — static */}
+          {/* Orbit ring — appears after all elements at 1.4s */}
           {!isMobile && (
             <svg
               viewBox="0 0 180 180"
               className="lb-orbit"
               fill="none"
               aria-hidden="true"
+              style={{
+                animation: r 
+                  ? 'fadeOnly 0.2s ease forwards' 
+                  : 'orbitShootIn 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards 1.4s',
+              }}
             >
               <circle
                 cx="90" cy="90" r="86"
@@ -170,27 +184,27 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ onComplete }) => {
             ))}
           </svg>
 
-          {/* ── Logo + glow — appears at 0ms, immediate presence ── */}
+          {/* ── Logo + glow — appears together at start ── */}
           <div className="lb-logo-wrap">
             <div
               className="lb-logo-glow"
               aria-hidden="true"
               style={{
-                animation: r ? 'none' : 'glowPulseIn 0.8s ease-out forwards',
+                animation: r ? 'none' : 'glowPulseIn 0.6s ease-out forwards',
               }}
             />
             <img
               src={logo}
               alt="Triangle Black luxury brand logo"
               width={160}
-              height={160}
+              height={180}
               loading="eager"
               decoding="async"
               className="lb-logo-img"
               style={{
                 animation: r
                   ? 'logoIn 0.2s ease forwards'
-                  : 'logoIn 0.4s cubic-bezier(0.16,1,0.3,1) forwards',
+                  : 'logoIn 0.6s cubic-bezier(0.16,1,0.3,1) forwards',
               }}
             />
           </div>
@@ -203,7 +217,7 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ onComplete }) => {
             style={{
               animation: r
                 ? 'fadeOnly 0.2s ease forwards'
-                : 'slideUp 0.4s ease forwards 0.4s',
+                : 'slideUp 0.4s ease forwards 0.6s',
             }}
           >
             TRIANGLE BLACK
@@ -214,7 +228,7 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ onComplete }) => {
             style={{
               animation: r
                 ? 'fadeOnly 0.2s ease forwards'
-                : 'lineGrow 0.4s ease forwards 0.6s',
+                : 'lineGrow 0.4s ease forwards 0.8s',
             }}
           />
 
@@ -223,7 +237,7 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ onComplete }) => {
             style={{
               animation: r
                 ? 'fadeOnly 0.2s ease forwards'
-                : 'slideUp 0.4s ease forwards 0.8s',
+                : 'slideUp 0.4s ease forwards 1.0s',
             }}
           >
             Hospitality Engineering Initialization
